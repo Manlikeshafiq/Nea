@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 768b4453f99211e46a05c03a1a64d5ac, type: 3}
+  m_Name: Tree
+  m_EditorClassIdentifier: 
+  plantName: Oak Tree
+  plantFamily: Trees
+  plantSprite: {fileID: 21300008, guid: 14aefffd3622c7347aad64f2bed35801, type: 3}
+  HP: 100
+  hungerLevel: 100
+  thirstLevel: 100
+  totalGrowthTicks: 0
+  ticksNeededOne: 100
+  ticksNeededTwo: 200
+  ticksNeededThree: 300
+  plantMaturity: 0

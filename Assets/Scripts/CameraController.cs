@@ -29,7 +29,7 @@ public class CameraController : MonoBehaviour
 
 
         //Get from GRIDMANAGER
-        GridManager gridManager = FindObjectOfType<GridManager>();
+        GridManager gridManager = Object.FindFirstObjectByType<GridManager>();
         Vector2 bounds = gridManager.GetWorldBounds();
 
         float halfHeight = camera.orthographicSize;
@@ -88,10 +88,10 @@ public class CameraController : MonoBehaviour
         float halfWidth = halfHeight * camera.aspect;
 
         minX = -halfWidth;
-        maxX = FindObjectOfType<GridManager>().GetWorldBounds().x + halfWidth;
+        maxX = Object.FindFirstObjectByType<GridManager>().GetWorldBounds().x + halfWidth;
 
         minY = -halfHeight;
-        maxY = FindObjectOfType<GridManager>().GetWorldBounds().y + halfHeight;
+        maxY = Object.FindFirstObjectByType<GridManager>().GetWorldBounds().y + halfHeight;
     }
 
     private void ClampCamera()
