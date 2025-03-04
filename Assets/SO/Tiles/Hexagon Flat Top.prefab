@@ -101,7 +101,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2c1a9f4e6f498a4b87d37ee8dec13ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileData: {fileID: 0}
+  tileSOData: {fileID: 0}
+  plantSlots: []
+  maxPlantSlots: 5
+  maxAnimalSlots: 3
 --- !u!60 &8076569877150588136
 PolygonCollider2D:
   m_ObjectHideFlags: 0

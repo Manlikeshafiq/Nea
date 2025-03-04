@@ -41,11 +41,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 7410019565079938229}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45736950e18877145946ed2fd7c919cb, type: 3}
+  m_Script: {fileID: 11500000, guid: 1fee5c4b02abddd4bbfc7d097f6e559c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   selectedPlant: {fileID: 0}
-  plantSOList:
-  - {fileID: 11400000, guid: 15d6856f38e30d04a93fd5e2a8b6d5d0, type: 2}
+  plantSOList: []
   tilePlanted: 0
+  plantingMode: 0
   TileSOData: {fileID: 0}

@@ -5,11 +5,12 @@ public class TimeTick : MonoBehaviour
 {
     public static event Action OnTick;
     private float tickInterval = 1;
-    private float tickCountdown;
+    private float timeCount;
     public int tick { get; private set; }
 
 
     public static TimeTick Instance;
+    public bool dayOrNight = true;
 
     private void Awake()
     {
@@ -23,17 +24,33 @@ public class TimeTick : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    private void Start()
+    {
+        
+    }
     void Update()
     {
-        tickCountdown += Time.deltaTime;
+        timeCount += Time.deltaTime;
 
-        if (tickCountdown >= tickInterval)
+        if (timeCount >= tickInterval)
         {
             tick++;
-            tickCountdown = 0;
-
-            
+            timeCount = 0;
+            DayOrNight();
             OnTick?.Invoke();
+        }
+    }
+
+    public bool DayOrNight()
+    {
+        if (tick % 24 < 12)
+        {
+            return dayOrNight = true;
+        }
+        else
+        {
+            return dayOrNight = false;
         }
     }
 }

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlantSelect : PlantManager
+public class PlantSelect : PlantSelectManager
 {
 
 
