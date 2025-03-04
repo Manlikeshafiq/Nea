@@ -13,7 +13,7 @@ public class GridManager : MonoBehaviour
     public GameObject tilePrefab; //Add hexagonal sprite prefab 
     public TileSO[] tileTypes; //DO NOT CHANGE NAME ERRORRSSFOS OIFSCE 
 
-    private TileMono[,] grid;
+    private TileClones[,] grid;
     private void Awake()
     {
         if (Instance == null)
@@ -29,7 +29,7 @@ public class GridManager : MonoBehaviour
 
     void Start()
     {
-        grid = new TileMono[gridWidth, gridHeight];
+        grid = new TileClones[gridWidth, gridHeight];
         GenerateGrid();
     }
 
@@ -47,7 +47,7 @@ public class GridManager : MonoBehaviour
 
                 Vector2 position = CalculateHexPositionOfTile(x, y); 
                 GameObject newTile = Instantiate(tilePrefab, position, Quaternion.identity, transform); 
-                TileMono tile = newTile.GetComponent<TileMono>();
+                TileClones tile = newTile.GetComponent<TileClones>();
                 tile.Initialize(selectedTileType);
 
                 grid[x, y] = tile;
@@ -78,7 +78,7 @@ public class GridManager : MonoBehaviour
         //ITERATE THROUGH AND - RANDOMWEIGHT BY CURRENT TILE WEIGHT
         //RANDOMWEIGHT < CURRENT TILE WEIGHT AND RETURN
 
-        Dictionary<TileSO, float> weightedTilesDictionary = new Dictionary<TileSO, float>();  //KEY  = TILE. VALUE = WEIGHT
+        Dictionary<TileSO, float> weightedTilesDictionary = new();  //KEY  = TILE. VALUE = WEIGHT
 
         foreach (var tile in tileTypes)
         {
@@ -129,9 +129,9 @@ public class GridManager : MonoBehaviour
     }
 
 
-    TileMono[] GetNeighborsOfTIle(int x, int y)
+    TileClones[] GetNeighborsOfTIle(int x, int y)
     {
-        List<TileMono> neighborsList = new List<TileMono>();
+        List<TileClones> neighborsList = new();
 
 
         int[][] directionsToNeighbourTile = new int[][]

@@ -27,6 +27,12 @@ public class PlantManager : MonoBehaviour
     }
 
     public void SelectPlant(int planSOListtIndex)
+
+        //CHECK FOR NULL
+        //ADD ALL PLANTS IN INSPECTOR
+        //MAKE ENUM FOR PLANTS???
+        //CHANGE THE INDEX FOR THE BUTTON WHICH CORRESPONDS TO PLANT IN INSPECTOR. EG 0 = TREE
+        //ADD PLANT TO LIST
     {
         if (planSOListtIndex >= 0 && planSOListtIndex < plantSOList.Count)
         {
@@ -41,16 +47,20 @@ public class PlantManager : MonoBehaviour
         }
     }
 
-    public void TryPlantOnTile(TileMono t)
+    public void TryPlantOnTile(TileClones tile)
     {
-        if (t != null && selectedPlant != null)
+        //CHECK FOR NULL
+        //REFERENCE TILEMONO ADDPLANT TO FIND IF TRUE
+        
+
+        if (tile != null && selectedPlant != null)
 
         {
-            tilePlanted = t.AddPlant(selectedPlant);
+            tilePlanted = tile.AddPlant(selectedPlant);
             if (tilePlanted)
             {
                 
-                Debug.Log($"Planted {selectedPlant.plantName} on tile {t.gameObject.name}");
+                Debug.Log($"Planted {selectedPlant.plantName} on tile {tile.gameObject.name}");
             }
         }
     }
