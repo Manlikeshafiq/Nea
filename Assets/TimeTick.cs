@@ -8,6 +8,21 @@ public class TimeTick : MonoBehaviour
     private float tickCountdown;
     public int tick { get; private set; }
 
+
+    public static TimeTick Instance;
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
     void Update()
     {
         tickCountdown += Time.deltaTime;

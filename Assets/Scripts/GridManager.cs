@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class GridManager : MonoBehaviour
 {
+
+    public static GridManager Instance;
+
     public int gridWidth = 10;
     public int gridHeight = 10;
     public float tileSize = 1.0f;
@@ -11,6 +14,18 @@ public class GridManager : MonoBehaviour
     public TileSO[] tileTypes; //DO NOT CHANGE NAME ERRORRSSFOS OIFSCE 
 
     private TileMono[,] grid;
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject); 
+        }
+        else
+        {
+            Destroy(gameObject); 
+        }
+    }
 
     void Start()
     {
@@ -20,6 +35,10 @@ public class GridManager : MonoBehaviour
 
     void GenerateGrid()
     {
+        //GENERATE TILE USING WEIGHTS 
+        //FIND LOCATION OF WHERE SAID TILE MUST GO
+        //INSTANTIATE AND INITIALIZE
+
         for (int x = 0; x < gridWidth; x++)
         {
             for (int y = 0; y < gridHeight; y++)
@@ -46,53 +65,67 @@ public class GridManager : MonoBehaviour
 
     TileSO GetWeightedTileType(int x, int y)
     {
+
+
+        //ADD WEIGHT TO ALL TILES
+        //GET NEIGHBOURS
+        //NULL CHECK
+        //GO THRU PREFERRED NEIGHBOURS
+        //ADD WEIGHTBOOST TO TILE
+
+        //FIND TOTAL WEIGHT
+        //RANDOM WEIGHT NUMBER GENERATE USING TOTAL WEIGHT
+        //ITERATE THROUGH AND - RANDOMWEIGHT BY CURRENT TILE WEIGHT
+        //RANDOMWEIGHT < CURRENT TILE WEIGHT AND RETURN
+
         Dictionary<TileSO, float> weightedTilesDictionary = new Dictionary<TileSO, float>();  //KEY  = TILE. VALUE = WEIGHT
 
-        foreach (var biome in tileTypes)
+        foreach (var tile in tileTypes)
         {
-            weightedTilesDictionary[biome] = biome.weight;   //add base weught
-        }
+            weightedTilesDictionary[tile] = tile.weight;
 
-        
-        foreach (var neighbor in GetNeighborsOfTIle(x, y))   //change weight due to neighbours
-        {
-            if (neighbor != null && neighbor.tileSOData != null)
+            foreach (var neighbor in GetNeighborsOfTIle(x, y))
             {
-                TileSO neighborTileData = neighbor.tileSOData;
-
-                foreach (var biome in tileTypes)
+                if (neighbor != null)
                 {
-                    
-                    foreach (var preference in biome.preferredNeighbors) 
-                    {
-                        if (preference.neighborTile == neighborTileData)
-                        {
-                            weightedTilesDictionary[biome] += preference.weightBoost; 
+                    TileSO neighborTileData = neighbor.tileSOData;
 
+                    foreach (var preferredNeighbour in tile.preferredNeighbors)
+                    {
+                        if (preferredNeighbour.neighborTile == neighborTileData)
+                        {
+                            weightedTilesDictionary[tile] += preferredNeighbour.weightBoost;
                         }
                     }
                 }
             }
         }
 
-        
-        float totalWeight = 0f;
-        foreach (var weightTilePair in weightedTilesDictionary) 
+
+
+        float totalWeight = 0;
+        float randomWeight = 0;
+        foreach (var tile in weightedTilesDictionary)
         {
-            totalWeight += weightTilePair.Value;
+            totalWeight += tile.Value;
+
+        }
+        randomWeight = UnityEngine.Random.Range(0, totalWeight);
+
+        foreach (var tile in weightedTilesDictionary)
+        {
+            
+
+            if (randomWeight < tile.Value)
+            {
+                return tile.Key;
+            }
+
+            randomWeight -= tile.Value;
         }
 
-        float randomWeightValue = Random.Range(0, totalWeight);
-        foreach (var pair in weightedTilesDictionary)
-        {
-            if (randomWeightValue < pair.Value)
-                return pair.Key;                                       
-                                                                        //Finds total weight. Random no between 0 and total weight. Iterates through and randomweight - by current tile weight until random weight is smaller than tile value where it then returns that tile
-            randomWeightValue -= pair.Value;
-        }
+        return tileTypes[32202];
 
-        
-        return tileTypes[0]; // fallback (shouldn't happen INSHALLAH)
     }
 
 

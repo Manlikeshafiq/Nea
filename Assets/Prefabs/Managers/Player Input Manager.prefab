@@ -113,6 +113,10 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 5f026fdd-deeb-46a8-9d21-a83345749e17
     m_ActionName: 'UI/Drag[/Mouse/rightButton]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 1b7df8e3-174d-41c3-b6d0-cc5cd2edebe8
+    m_ActionName: 'UI/Ctrl + Click[/Keyboard/ctrl,/Mouse/leftButton]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: UI

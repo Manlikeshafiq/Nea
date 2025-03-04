@@ -12,13 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b024c6f5e9286a749b07ced0f9af85ac, type: 3}
   m_Name: Mountain
   m_EditorClassIdentifier: 
-  tileType: Mountain
+  tileBiome: Mountain
   tileColor: {r: 0.5283019, g: 0.5283019, b: 0.5283019, a: 1}
   weight: 0.2
   sunlightLevel: 0
   fertilityLevel: 0
-  waterLevel: 0
-  animalSlots: []
+  waterLeve: 100
   preferredNeighbors:
   - neighborTile: {fileID: 11400000}
     weightBoost: 2
