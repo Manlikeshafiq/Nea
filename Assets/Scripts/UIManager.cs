@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class UIManager : MonoBehaviour
 {
@@ -18,6 +19,8 @@ public class UIManager : MonoBehaviour
     public TMP_InputField tileWater;
 
     public GameObject tilePanel;
+
+    public TileManager tileManager;
 
 
     private void Awake()
@@ -51,6 +54,15 @@ public class UIManager : MonoBehaviour
     public void OpenTilePanel()
     {
         tilePanel.SetActive(true);
+    }
+
+
+
+    private float UpdateWeightTileUI()
+    {
+        tileManager.tileSOData.weight = (float)Convert.ToDouble(UIManager.Instance.tileWeight.text);
+        return tileManager.tileSOData.weight;
+
     }
 }
 

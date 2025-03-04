@@ -4,7 +4,7 @@ using System.Collections.Generic;
 [CreateAssetMenu(fileName = "New Tile", menuName = "Grid/Tile")]
 public class TileSO : ScriptableObject
 {
-    TileMono tileMono = new TileMono();
+    TileClones tileMono = new TileClones();
 
     [Header("Tile Gen")]
     public string tileBiome;
@@ -14,7 +14,7 @@ public class TileSO : ScriptableObject
     [Header("Tile Base Info")]
     public int sunlightLevel = 100; 
     public int fertilityLevel = 100;
-    public int waterLeve = 100;
+    public int waterLevel = 100;
 
 
   
