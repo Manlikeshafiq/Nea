@@ -26,6 +26,11 @@ public class UIManager : MonoBehaviour
     public TMP_Text tilePlantBodyText3;
     public TMP_Text tilePlantBodyText4;
 
+    public TMP_Text speed;
+    public TMP_Text days;
+    public Button addSpeed;
+    public Button decreaseSpeed;
+
     public TMP_InputField tileWeight;
     public TMP_InputField tileSunlight;
     public TMP_InputField tileMaturity;
@@ -33,7 +38,9 @@ public class UIManager : MonoBehaviour
 
     public GameObject tilePanel;
     public TileMono selectedTile;
-
+    bool panelIsOpen = false;
+    int hours;
+    int intdays;
     private void Awake()
     {
         if (Instance == null)
@@ -55,14 +62,64 @@ public class UIManager : MonoBehaviour
         plantSelectPanel.SetActive(false);
         closePlantSelectButton.SetActive(false);
         tilePanel.SetActive(false);
+
+        TimeTick.OnTick += RefreshDaysAndHours;
     }
 
+    public void RefreshDaysAndHours()
+    {
+        intdays = TimeTick.Instance.tick / 24;
+        hours = TimeTick.Instance.tick % 24;
+
+        days.text = ($"Days - {intdays} Hours - {hours}");
+    }
+    public void AddTileToRefreshInfo()
+    {
+        if (panelIsOpen)
+        {
+            RefreshInfo(selectedTile);
+        }
+       
+    }
     
+    public void RefreshInfo(TileMono tile)
+    {
+        TMP_Text[] plantTitleTexts = { tilePlantTitleText0, tilePlantTitleText1, tilePlantTitleText2, tilePlantTitleText3, tilePlantTitleText4 };
+        TMP_Text[] plantBodyTexts = { tilePlantBodyText0, tilePlantBodyText1, tilePlantBodyText2, tilePlantBodyText3, tilePlantBodyText4 };
+
+        if (tile.plantSlots != null && tile.plantSlots.Count > 0)
+        {
+
+            
+            for (int i = 0; i < tile.plantSlots.Count; i++)
+            {
+                 
+
+                Debug.Log("Aaaa");
+                plantTitleTexts[i].text = tile.plantSlots[i].plantName;
+                plantBodyTexts[i].text = $"HP - {tile.plantSlots[i].HP} Hunger - {Math.Round(tile.plantSlots[i].hungerLevel, 2)} Thirst - {Math.Round(tile.plantSlots[i].thirstLevel, 2)}\n" +
+                                    $"Maturity - {tile.plantSlots[i].plantMaturity}\n" +
+                                    "Growth to [] - []/ []\n";
+            }
+        }
+        else
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                Debug.Log("No plants");
+                plantTitleTexts[i].text = ("N/a");
+                plantBodyTexts[i].text = ("N/A)");
+            }
+        }
+
+        Debug.Log("refreshed");
+
+    }
     public void OpenTilePanel(TileMono tile)
     {
         selectedTile = tile;
         tilePanel.SetActive(true);
-        
+        panelIsOpen = true;
         //ALL INPUT FIELDS = DATA
 
         tileTitleText.text = tile.tileSOData.tileBiome;
@@ -70,6 +127,7 @@ public class UIManager : MonoBehaviour
         tileWater.text = tile.tileSOData.waterLeve.ToString();
         tileSunlight.text = tile.tileSOData.sunlightLevel.ToString();
         tileMaturity.text = tile.tileSOData.fertilityLevel.ToString();
+
 
 
         //TO DO: ITERATION
@@ -97,32 +155,10 @@ public class UIManager : MonoBehaviour
         */
 
 
-        TMP_Text[] plantTitleTexts = { tilePlantTitleText0, tilePlantTitleText1, tilePlantTitleText2, tilePlantTitleText3, tilePlantTitleText4 };
-        TMP_Text[] plantBodyTexts = { tilePlantBodyText0, tilePlantBodyText1, tilePlantBodyText2, tilePlantBodyText3, tilePlantBodyText4 };
+       
 
-        if (tile.plantSlots != null && tile.plantSlots.Count > 0)
-        {
-            
-
-            for (int i = 0; i < tile.plantSlots.Count; i++)
-            {
-
-                Debug.Log("Aaaa");
-                plantTitleTexts[i].text = tile.plantSlots[i].plantName;
-                plantBodyTexts[i].text = $"HP - {tile.plantSlots[i].HP} Hunger - {tile.plantSlots[i].hungerLevel} Thirst - {tile.plantSlots[i].thirstLevel}\n" +
-                                    $"Maturity - {tile.plantSlots[i].plantMaturity}\n" +
-                                    "Growth to [] - []/ []\n";
-            }
-        }
-        else
-        {
-           for (int i = 0;i < 5; i++)
-            {
-                Debug.Log("No plants");
-                plantTitleTexts[i].text =("N/a");
-                plantBodyTexts[i].text = ("N/A)");
-            }
-        }
+        TimeTick.OnTick -= AddTileToRefreshInfo;
+        TimeTick.OnTick += AddTileToRefreshInfo;
     }
 
 
@@ -157,6 +193,14 @@ public class UIManager : MonoBehaviour
 
     }
 
+    public void PanelOpenFalse()
+    {
+        panelIsOpen = false;
+        tilePanel.SetActive(false);
+
+        // Unsubscribe from the event
+        TimeTick.OnTick -= AddTileToRefreshInfo;
+    }
 
 }
 

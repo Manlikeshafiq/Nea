@@ -9,8 +9,8 @@ public class PlantSO : ScriptableObject
     public Sprite plantSprite;
 
     public int HP;
-    public int hungerLevel;
-    public int thirstLevel;
+    public double hungerLevel;
+    public double thirstLevel;
 
 
 

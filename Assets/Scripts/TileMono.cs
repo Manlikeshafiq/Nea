@@ -87,9 +87,13 @@ public class TileMono : MonoBehaviour
 
 
             GameObject plantObject = new GameObject(selectedPlant.plantName);
-            plantObject.transform.SetParent(transform); 
-            PlantIndividual plantData = plantObject.AddComponent<PlantIndividual>();
-            plantData.plantSO = selectedPlant;
+            plantObject.transform.SetParent(transform);
+
+            if (selectedPlant.plantName == "Oak Tree")
+            {
+                PlantTreeUpdates plantData = plantObject.AddComponent<PlantTreeUpdates>();
+                plantData.plantso = selectedPlant;
+            }
 
             Debug.Log($"Added {selectedPlant.plantName}  {gameObject.name}");
             return true;
@@ -101,11 +105,12 @@ public class TileMono : MonoBehaviour
         } 
         }
 
-    public void RemovePlant(PlantSO plant)
+    
+    public void RemovePlant(PlantSO plant, int i)
     {
-        if (plantSlots.Contains(plant))
+        if (plantSlots[i] != null)
         {
-            plantSlots.Remove(plant);
+            plantSlots[i] = null;
             Debug.Log($"Removed {plant.plantName}  {gameObject.name}");
         }
     }

@@ -13,7 +13,7 @@ public class GridManager : MonoBehaviour
     public GameObject tilePrefab; //Add hexagonal sprite prefab 
     public TileSO[] tileTypes; //DO NOT CHANGE NAME ERRORRSSFOS OIFSCE 
 
-    private TileMono[,] grid;
+    public TileMono[,] grid;
     private void Awake()
     {
         if (Instance == null)
