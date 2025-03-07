@@ -26,7 +26,7 @@ public class PlantSelectManager : MonoBehaviour
         }
     }
 
-    private PlantSO ClonePlantSO(PlantSO data)
+    public PlantSO ClonePlantSO(PlantSO data)
     {
         PlantSO selectedPlantInstantiated = ScriptableObject.CreateInstance<PlantSO>();
         selectedPlantInstantiated.plantName = data.plantName;
@@ -53,11 +53,12 @@ public class PlantSelectManager : MonoBehaviour
         }
     }
 
-    public void TryPlantOnTile(TileMono t)
+    public void TryPlantOnTile(TileMono t, PlantSO selectedPlant)
     {
         if (t != null && selectedPlant != null)
 
         {
+            
             tilePlanted = t.AddPlant(ClonePlantSO(selectedPlant));
             if (tilePlanted)
             {

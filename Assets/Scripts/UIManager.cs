@@ -98,8 +98,8 @@ public class UIManager : MonoBehaviour
                 Debug.Log("Aaaa");
                 plantTitleTexts[i].text = tile.plantSlots[i].plantName;
                 plantBodyTexts[i].text = $"HP - {tile.plantSlots[i].HP} Hunger - {Math.Round(tile.plantSlots[i].hungerLevel, 2)} Thirst - {Math.Round(tile.plantSlots[i].thirstLevel, 2)}\n" +
-                                    $"Maturity - {tile.plantSlots[i].plantMaturity}\n" +
-                                    "Growth to [] - []/ []\n";
+                                    $"Maturity - {tile.plantSlots[i].plantMaturityName}\n" +
+                                    $"Growth to {tile.plantSlots[i].nextPlantMaturityName} - / []\n";
             }
         }
         else
@@ -115,6 +115,8 @@ public class UIManager : MonoBehaviour
         Debug.Log("refreshed");
 
     }
+
+   
     public void OpenTilePanel(TileMono tile)
     {
         selectedTile = tile;
@@ -127,7 +129,7 @@ public class UIManager : MonoBehaviour
         tileWater.text = tile.tileSOData.waterLeve.ToString();
         tileSunlight.text = tile.tileSOData.sunlightLevel.ToString();
         tileMaturity.text = tile.tileSOData.fertilityLevel.ToString();
-
+        
 
 
         //TO DO: ITERATION

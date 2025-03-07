@@ -38,6 +38,14 @@ public class TileMono : MonoBehaviour
 
     }
 
+    public void Start()
+    {
+        foreach (PlantSO plant in plantSlots)
+        {
+            TimeTick.OnTick += () => plant.SpreadSeeds(this);
+        }
+    }
+    
 
     public TileSO InstantiateTileSOData(TileSO data)
     {
@@ -60,7 +68,7 @@ public class TileMono : MonoBehaviour
     {
         if (PlantSelectManager.Instance != null && PlantSelectManager.Instance.plantingMode)
         {
-            PlantSelectManager.Instance.TryPlantOnTile(this);
+            PlantSelectManager.Instance.TryPlantOnTile(this, PlantSelectManager.Instance.selectedPlant);
         }
         else if (PlantSelectManager.Instance.plantingMode != true)
         {

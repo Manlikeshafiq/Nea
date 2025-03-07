@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class GridManager : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class GridManager : MonoBehaviour
 
     public GameObject tilePrefab; //Add hexagonal sprite prefab 
     public TileSO[] tileTypes; //DO NOT CHANGE NAME ERRORRSSFOS OIFSCE 
+    public PlantSO[] plants;
 
     public TileMono[,] grid;
     private void Awake()
@@ -44,14 +46,90 @@ public class GridManager : MonoBehaviour
             for (int y = 0; y < gridHeight; y++)
             {
                 TileSO selectedTileType = GetWeightedTileType(x, y);
-
-                Vector2 position = CalculateHexPositionOfTile(x, y); 
-                GameObject newTile = Instantiate(tilePrefab, position, Quaternion.identity, transform); 
+                Vector2 hexPositionOfTIle = CalculateHexPositionOfTile(x, y); 
+                GameObject newTile = Instantiate(tilePrefab, hexPositionOfTIle, Quaternion.identity, transform); 
                 TileMono tile = newTile.GetComponent<TileMono>();
                 tile.Initialize(selectedTileType);
 
                 grid[x, y] = tile;
+
+                SpawnPlants(tile, x, y);
             }
+        }
+    }
+
+
+
+    public void SpawnPlants(TileMono tileMono, int x, int y)
+    {
+        Dictionary<PlantSO, float> weightAndPlants = new Dictionary<PlantSO, float>();  //KEY  = TILE. VALUE = WEIGHT
+
+        tileMono = grid[x, y];
+        Debug.Log(grid[x, y]);
+        int maxPlants = 5;
+        int plantsPlanted = 0;
+        float repeatChance = 1.0f;
+
+        while (plantsPlanted < maxPlants && UnityEngine.Random.value < repeatChance)
+        {
+            foreach (var plant in plants)
+            {
+
+                bool prefersTile = false;
+                float plantWeight = plant.weight;
+
+
+                TileSO tileData = tileMono.tileSOData;
+               
+
+                foreach (var preferredTile in plant.preferredTiles)
+                {
+                    Debug.Log($"Checking plant preference: Tile = {tileData.tileBiome}, Preferred = {preferredTile.preferredTile.tileBiome}");
+                    if (preferredTile.preferredTile.tileBiome == tileData.tileBiome)
+                    {
+                        plantWeight += preferredTile.weightBoost;
+                        prefersTile = true;
+
+
+                    }
+                }
+
+                if (prefersTile)
+                {
+                    weightAndPlants[plant] = plantWeight;
+                }
+
+
+
+            }
+
+           
+
+            float totalWeight = 0;
+            float randomWeight = 0;
+            foreach (var plant in weightAndPlants)
+            {
+                totalWeight += plant.Value;
+
+            }
+            randomWeight = UnityEngine.Random.Range(0, totalWeight);
+
+            foreach (var plant in weightAndPlants)
+            {
+
+
+                if (randomWeight < plant.Value)
+                {
+                    Debug.Log("working");
+                    PlantSelectManager.Instance.TryPlantOnTile(tileMono, plant.Key);
+                    plantsPlanted++;
+                }
+
+                randomWeight -= plant.Value;
+            }
+
+            repeatChance *= 0.5f;
+
         }
     }
 
@@ -83,6 +161,7 @@ public class GridManager : MonoBehaviour
         foreach (var tile in tileTypes)
         {
             weightedTilesDictionary[tile] = tile.weight;
+            
 
             foreach (var neighbor in GetNeighborsOfTIle(x, y))
             {
