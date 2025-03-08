@@ -14,12 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileBiome: Water
   tileColor: {r: 0.227451, g: 0.47450984, b: 0.73333335, a: 1}
-  weight: 0.8
+  weight: 1
   sunlightLevel: 0
   fertilityLevel: 0
   waterLeve: 100
   preferredNeighbors:
-  - neighborTile: {fileID: 11400000, guid: 648e4da1e8215294aaa6cfd235e3d602, type: 2}
-    weightBoost: 2
   - neighborTile: {fileID: 11400000}
-    weightBoost: 6
+    weightBoost: 5

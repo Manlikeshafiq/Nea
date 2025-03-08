@@ -14,14 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileBiome: Grass
   tileColor: {r: 0, g: 1, b: 0.15520024, a: 1}
-  weight: 1.4
+  weight: 1
   sunlightLevel: 0
   fertilityLevel: 0
   waterLeve: 100
   preferredNeighbors:
-  - neighborTile: {fileID: 11400000, guid: bb6d2ba11d72c304db1ca854dafc2ab6, type: 2}
-    weightBoost: 2
-  - neighborTile: {fileID: 11400000, guid: 9e9c3563b8b5a484dbcfce8684c7321a, type: 2}
-    weightBoost: 0
   - neighborTile: {fileID: 11400000}
-    weightBoost: 10
+    weightBoost: 5
+  - neighborTile: {fileID: 11400000, guid: c53ac7abd49169349a939898a9c18593, type: 2}
+    weightBoost: -10
+  - neighborTile: {fileID: 11400000, guid: ca7bf4c260340c54dab49ada7e2460ee, type: 2}
+    weightBoost: 2

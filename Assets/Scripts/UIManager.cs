@@ -95,7 +95,6 @@ public class UIManager : MonoBehaviour
             {
                  
 
-                Debug.Log("Aaaa");
                 plantTitleTexts[i].text = tile.plantSlots[i].plantName;
                 plantBodyTexts[i].text = $"HP - {tile.plantSlots[i].HP} Hunger - {Math.Round(tile.plantSlots[i].hungerLevel, 2)} Thirst - {Math.Round(tile.plantSlots[i].thirstLevel, 2)}\n" +
                                     $"Maturity - {tile.plantSlots[i].plantMaturityName}\n" +
@@ -106,13 +105,11 @@ public class UIManager : MonoBehaviour
         {
             for (int i = 0; i < 5; i++)
             {
-                Debug.Log("No plants");
                 plantTitleTexts[i].text = ("N/a");
                 plantBodyTexts[i].text = ("N/A)");
             }
         }
 
-        Debug.Log("refreshed");
 
     }
 

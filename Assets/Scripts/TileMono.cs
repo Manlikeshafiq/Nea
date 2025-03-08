@@ -18,20 +18,29 @@ public class TileMono : MonoBehaviour
     public List<PlantSO> plantSlots = new List<PlantSO>();
     public int maxPlantSlots = 5;
     public int maxAnimalSlots = 3;
+    public int tileX = 3;
+    public int tileY = 3;
 
-    
+    public int tileNo;
+    public int plantID;
+
+
+    int checkNumber;
+
+
     void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    public void Initialize(TileSO data)
+    public void Initialize(TileSO data, int x, int y)
     {
         //ALL DATA COMES FROM CLONE
         tileSOData = InstantiateTileSOData(data);
         name = $"Tile ({tileSOData.tileBiome})";
-
+        tileNo = GridManager.Instance.tileNo;
         //ADD X,Y COORDS HERE?
+        tileX = x; tileY = y;
 
         spriteRenderer.color = tileSOData.tileColor;
 
@@ -40,14 +49,54 @@ public class TileMono : MonoBehaviour
 
     public void Start()
     {
-        foreach (PlantSO plant in plantSlots)
+        TimeTick.OnTick += Check1;
+
+
+
+
+    }
+
+
+    public void Check1()
+    {
+
+        List<PlantSO> tilesToRemove = new List<PlantSO>();
+
+        foreach (PlantSO plant in plantSlots) 
+        { 
+            checkNumber = UnityEngine.Random.Range(0, plant.seedsPerYear);
+
+            if (checkNumber == 4)
+            {
+                Debug.Log(checkNumber + "PLANTING ON " + this);
+                plant.SpreadSeeds(this);
+            }
+
+            else
+            {
+
+            }
+            if (plant.thirstLevel <= 0)
+            {
+                tilesToRemove.Add(plant);
+            }
+            if (plant.hungerLevel <= 0)
+            {
+                tilesToRemove.Add(plant);
+
+            }
+        }
+
+
+        foreach (var tile in tilesToRemove)
         {
-            TimeTick.OnTick += () => plant.SpreadSeeds(this);
+            RemovePlant(tile);
         }
     }
-    
 
-    public TileSO InstantiateTileSOData(TileSO data)
+
+
+public TileSO InstantiateTileSOData(TileSO data)
     {
         //INSTANTIATE SO FOR EACH TILE TO HAVE ITS OWN DATA
 
@@ -73,7 +122,6 @@ public class TileMono : MonoBehaviour
         else if (PlantSelectManager.Instance.plantingMode != true)
         {
             UIManager.Instance.OpenTilePanel(this);
-            for(int i = 0; i < plantSlots.Count; i++) { Debug.Log(plantSlots[i].ToString()); }
             
         }
 
@@ -91,6 +139,7 @@ public class TileMono : MonoBehaviour
         if (plantSlots.Count < maxPlantSlots)
         {
             plantSlots.Add(selectedPlant);
+            plantID++;
 
 
 
@@ -103,7 +152,6 @@ public class TileMono : MonoBehaviour
                 plantData.plantso = selectedPlant;
             }
 
-            Debug.Log($"Added {selectedPlant.plantName}  {gameObject.name}");
             return true;
         }
         else
@@ -114,12 +162,19 @@ public class TileMono : MonoBehaviour
         }
 
     
-    public void RemovePlant(PlantSO plant, int i)
+    public void RemovePlant(PlantSO plant)
     {
-        if (plantSlots[i] != null)
+        for (int i = 0; i < plantSlots.Count; i++)
         {
-            plantSlots[i] = null;
-            Debug.Log($"Removed {plant.plantName}  {gameObject.name}");
+            if (plantSlots[i].plantID == plant.plantID)
+            {
+                Debug.Log("removed plant");
+               
+                plant.dead = true;
+                plantSlots.RemoveAt(i);
+
+                
+            }
         }
     }
 

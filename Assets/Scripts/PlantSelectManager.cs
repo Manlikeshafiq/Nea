@@ -34,6 +34,14 @@ public class PlantSelectManager : MonoBehaviour
         selectedPlantInstantiated.hungerLevel = data.hungerLevel;
         selectedPlantInstantiated.thirstLevel = data.thirstLevel;
         selectedPlantInstantiated.plantMaturity = data.plantMaturity;
+        selectedPlantInstantiated.ticksNeededOne = data.ticksNeededOne;
+        selectedPlantInstantiated.ticksNeededTwo = data.ticksNeededTwo;
+        selectedPlantInstantiated.ticksNeededThree = data.ticksNeededThree;
+        selectedPlantInstantiated.ticksNeededFour = data.ticksNeededFour;
+        selectedPlantInstantiated.preferredTiles = data.preferredTiles;
+        selectedPlantInstantiated.seedsPerYear = data.seedsPerYear;
+        selectedPlantInstantiated.plantID = data.plantID;
+        selectedPlantInstantiated.dead = data.dead; 
 
         return selectedPlantInstantiated;
     }
@@ -45,12 +53,8 @@ public class PlantSelectManager : MonoBehaviour
             selectedPlant = ClonePlantSO(plantSOList[planSOListtIndex]);
             plantingMode = true;
 
-            Debug.Log("Selected Plant: " + selectedPlant.plantName);
         }
-        else
-        {
-            Debug.Log("Fail");
-        }
+       
     }
 
     public void TryPlantOnTile(TileMono t, PlantSO selectedPlant)
@@ -60,10 +64,10 @@ public class PlantSelectManager : MonoBehaviour
         {
             
             tilePlanted = t.AddPlant(ClonePlantSO(selectedPlant));
+            selectedPlant.plantID = t.plantID;
             if (tilePlanted)
             {
                 
-                Debug.Log($"Planted {selectedPlant.plantName} on tile {t.gameObject.name}");
             }
         }
     }

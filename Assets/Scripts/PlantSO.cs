@@ -15,12 +15,15 @@ public class PlantSO : ScriptableObject
 
     public TilePreference[] preferredTiles;
     public string plantName;
+    public int plantID;
+
     public string plantFamily;
     public Sprite plantSprite;
 
     public int HP;
     public double hungerLevel;
     public double thirstLevel;
+    public bool dead = false;
 
    
     
@@ -32,26 +35,34 @@ public class PlantSO : ScriptableObject
     public float ticksNeededOne;
     public float ticksNeededTwo;
     public float ticksNeededThree;
-    public int plantMaturity;
+    public float ticksNeededFour;
+
+    public int plantMaturity = 0;
     public string plantMaturityName;
     public string nextPlantMaturityName;
+    public int seedsPerYear =2000;
 
     public int TicksNeeded()
     {
-        if (totalGrowthTicks > ticksNeededOne)
+        if (totalGrowthTicks >= ticksNeededOne && totalGrowthTicks < ticksNeededTwo)
         {
 
             return plantMaturity = 1;
         }
-        else if (totalGrowthTicks > ticksNeededTwo)
+        if (totalGrowthTicks >= ticksNeededTwo && totalGrowthTicks < ticksNeededThree)
         {
+
             return plantMaturity = 2;
         }
-        else if (totalGrowthTicks > ticksNeededThree)
+        if (totalGrowthTicks >= ticksNeededThree && totalGrowthTicks < ticksNeededFour)
         {
             return plantMaturity = 3;
         }
 
+        if (totalGrowthTicks >= ticksNeededFour)
+        {
+            return plantMaturity = 4;
+        }
         else return plantMaturity = 0;
     }
 
@@ -59,9 +70,14 @@ public class PlantSO : ScriptableObject
     {
         if (plantMaturity == 2)
         {
-            Debug.Log("working");
+            GridManager.Instance.SpreadSeeds(t.tileX, t.tileY, this);
         }
         
+    }
+
+    public void killPlant(TileMono t)
+    {
+       
     }
     
 }

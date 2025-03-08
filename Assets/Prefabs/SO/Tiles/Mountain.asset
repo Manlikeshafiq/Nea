@@ -14,10 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileBiome: Mountain
   tileColor: {r: 0.5283019, g: 0.5283019, b: 0.5283019, a: 1}
-  weight: 0.2
+  weight: 1
   sunlightLevel: 0
   fertilityLevel: 0
   waterLeve: 100
   preferredNeighbors:
   - neighborTile: {fileID: 11400000}
-    weightBoost: 2
+    weightBoost: 3
+  - neighborTile: {fileID: 11400000, guid: 8ccb742363d7d49458d93a66ffb4cfd8, type: 2}
+    weightBoost: -1

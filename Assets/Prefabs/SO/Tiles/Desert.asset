@@ -14,14 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileBiome: Desert
   tileColor: {r: 1, g: 0.8985187, b: 0, a: 1}
-  weight: 1.4
+  weight: 1
   sunlightLevel: 0
   fertilityLevel: 0
   waterLeve: 100
   preferredNeighbors:
-  - neighborTile: {fileID: 11400000, guid: bb6d2ba11d72c304db1ca854dafc2ab6, type: 2}
-    weightBoost: 4
-  - neighborTile: {fileID: 11400000, guid: 648e4da1e8215294aaa6cfd235e3d602, type: 2}
-    weightBoost: -3
   - neighborTile: {fileID: 11400000}
-    weightBoost: 10
+    weightBoost: 7
+  - neighborTile: {fileID: 11400000, guid: dbe281f4b71daae4c948b9c53185e990, type: 2}
+    weightBoost: -10
