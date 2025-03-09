@@ -95,7 +95,7 @@ public class GridManager : MonoBehaviour
             totalWeight += tile.Value;
         }
 
-        if (totalWeight == 0) return; 
+        if (totalWeight == 0) return;
 
         randomWeight = UnityEngine.Random.Range(0f, totalWeight);
 
@@ -109,7 +109,7 @@ public class GridManager : MonoBehaviour
             {
                 Debug.Log("planted" + tile.Key);
                 PlantSelectManager.Instance.TryPlantOnTile(tile.Key, plantso);
-                return; 
+                return;
             }
         }
     }
@@ -269,7 +269,7 @@ public class GridManager : MonoBehaviour
         {
             if (value.Value < 0)
             {
-                tilesToRemove.Add(value.Key);  
+                tilesToRemove.Add(value.Key);
             }
             else
             {
@@ -277,7 +277,7 @@ public class GridManager : MonoBehaviour
             }
         }
 
-      
+
         foreach (var tile in tilesToRemove)
         {
             weightedTilesDictionary.Remove(tile);
@@ -309,17 +309,17 @@ public class GridManager : MonoBehaviour
 
         Debug.Log("returned");
         return tileTypes[0];
-            
+
     }
 
 
     TileMono[] GetNeighboursOfTIle(int x, int y)
+    {
+        List<TileMono> neighborsList = new List<TileMono>();
+
+
+        int[][] directionsToNeighbourTile = new int[][]
         {
-            List<TileMono> neighborsList = new List<TileMono>();
-
-
-            int[][] directionsToNeighbourTile = new int[][]
-            {
             //         X    Y
             new int[] { 0,  1 },
             new int[] { 0, -1 }, // V
@@ -332,37 +332,36 @@ public class GridManager : MonoBehaviour
 
             new int[] { 1, -1 },
             new int[] { -1, 1 } // D
-            };
+        };
 
-            foreach (var direction in directionsToNeighbourTile)
-            {
-                int neighbourX = x + direction[0];
-                int neighbourY = y + direction[1];
-                if (neighbourX >= 0 && neighbourX < gridWidth
-                    && neighbourY >= 0 && neighbourY < gridHeight)
-                {
-                    neighborsList.Add(grid[neighbourX, neighbourY]);
-                }
-            }
-
-            return neighborsList.ToArray();
-        }
-
-        Vector2 CalculateHexPositionOfTile(int x, int y)
+        foreach (var direction in directionsToNeighbourTile)
         {
-            float xOffset = tileSize * 0.75f;
-            float yOffset = tileSize * Mathf.Sqrt(3) / 2f;
-
-            float xPos = x * xOffset;
-            float yPos = y * yOffset;
-
-
-            if (x % 2 == 1)
+            int neighbourX = x + direction[0];
+            int neighbourY = y + direction[1];
+            if (neighbourX >= 0 && neighbourX < gridWidth
+                && neighbourY >= 0 && neighbourY < gridHeight)
             {
-                yPos += yOffset / 2f;
+                neighborsList.Add(grid[neighbourX, neighbourY]);
             }
-
-            return new Vector2(xPos, yPos);
         }
+
+        return neighborsList.ToArray();
     }
 
+    Vector2 CalculateHexPositionOfTile(int x, int y)
+    {
+        float xOffset = tileSize * 0.75f;
+        float yOffset = tileSize * Mathf.Sqrt(3) / 2f;
+
+        float xPos = x * xOffset;
+        float yPos = y * yOffset;
+
+
+        if (x % 2 == 1)
+        {
+            yPos += yOffset / 2f;
+        }
+
+        return new Vector2(xPos, yPos);
+    }
+}

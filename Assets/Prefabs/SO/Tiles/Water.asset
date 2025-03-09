@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Water
   m_EditorClassIdentifier: 
   tileBiome: Water
-  tileColor: {r: 0.227451, g: 0.47450984, b: 0.73333335, a: 1}
+  tileColour: {r: 0, g: 0.07280898, b: 1, a: 0}
   weight: 1
   sunlightLevel: 0
   fertilityLevel: 0

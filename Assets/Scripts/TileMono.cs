@@ -10,7 +10,7 @@ using UnityEngine.UIElements;
 
 public class TileMono : MonoBehaviour
 {
-    public TileSO tileSOData;  
+    public TileSO tileSOData;
 
     private SpriteRenderer spriteRenderer;
 
@@ -42,7 +42,7 @@ public class TileMono : MonoBehaviour
         //ADD X,Y COORDS HERE?
         tileX = x; tileY = y;
 
-        spriteRenderer.color = tileSOData.tileColor;
+        spriteRenderer.color = tileSOData.tileColour;
 
 
     }
@@ -62,8 +62,8 @@ public class TileMono : MonoBehaviour
 
         List<PlantSO> tilesToRemove = new List<PlantSO>();
 
-        foreach (PlantSO plant in plantSlots) 
-        { 
+        foreach (PlantSO plant in plantSlots)
+        {
             checkNumber = UnityEngine.Random.Range(0, plant.seedsPerYear);
 
             if (checkNumber == 4)
@@ -96,13 +96,13 @@ public class TileMono : MonoBehaviour
 
 
 
-public TileSO InstantiateTileSOData(TileSO data)
+    public TileSO InstantiateTileSOData(TileSO data)
     {
         //INSTANTIATE SO FOR EACH TILE TO HAVE ITS OWN DATA
 
         TileSO newTile = ScriptableObject.CreateInstance<TileSO>();
         newTile.tileBiome = data.tileBiome;
-        newTile.tileColor = data.tileColor;
+        newTile.tileColour = data.tileColour;
         newTile.weight = data.weight;
         newTile.waterLeve = data.waterLeve;
         newTile.sunlightLevel = data.sunlightLevel;
@@ -122,14 +122,14 @@ public TileSO InstantiateTileSOData(TileSO data)
         else if (PlantSelectManager.Instance.plantingMode != true)
         {
             UIManager.Instance.OpenTilePanel(this);
-            
+
         }
 
-        
+
 
     }
 
-    
+
 
 
 
@@ -158,10 +158,10 @@ public TileSO InstantiateTileSOData(TileSO data)
         {
             Debug.Log("no more tilees available");
             return false;
-        } 
         }
+    }
 
-    
+
     public void RemovePlant(PlantSO plant)
     {
         for (int i = 0; i < plantSlots.Count; i++)
@@ -169,11 +169,11 @@ public TileSO InstantiateTileSOData(TileSO data)
             if (plantSlots[i].plantID == plant.plantID)
             {
                 Debug.Log("removed plant");
-               
+
                 plant.dead = true;
                 plantSlots.RemoveAt(i);
 
-                
+
             }
         }
     }
@@ -186,4 +186,3 @@ public TileSO InstantiateTileSOData(TileSO data)
 
 }
 
-        

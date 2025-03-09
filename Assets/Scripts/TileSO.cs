@@ -7,7 +7,7 @@ public class TileSO : ScriptableObject
     
     [Header("Tile Gen")]
     public string tileBiome;
-    public Color tileColor;
+    public Color tileColour;
     public float weight;
 
     [Header("Tile Base Info")]
