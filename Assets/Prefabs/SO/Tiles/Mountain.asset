@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Mountain
   m_EditorClassIdentifier: 
   tileBiome: Mountain
-  tileColour: {r: 0.254717, g: 0.254717, b: 0.254717, a: 0}
+  tileColor: {r: 0.5283019, g: 0.5283019, b: 0.5283019, a: 1}
   weight: 1
   sunlightLevel: 0
   fertilityLevel: 0

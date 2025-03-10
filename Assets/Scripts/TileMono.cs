@@ -2,6 +2,7 @@ using JetBrains.Annotations;
 using Mono.Cecil;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -10,12 +11,15 @@ using UnityEngine.UIElements;
 
 public class TileMono : MonoBehaviour
 {
-    public TileSO tileSOData;
+    public TileSO tileSOData;  
 
     private SpriteRenderer spriteRenderer;
 
 
     public List<PlantSO> plantSlots = new List<PlantSO>();
+    public List<AnimalSO> animalSlots = new List<AnimalSO>();
+
+
     public int maxPlantSlots = 5;
     public int maxAnimalSlots = 3;
     public int tileX = 3;
@@ -24,6 +28,13 @@ public class TileMono : MonoBehaviour
     public int tileNo;
     public int plantID;
 
+
+    public float gScore; // Cost from start to this tile
+    public float hScore; // Heuristic cost to reach the end
+    public TileMono cameFrom; // Parent tile in the path
+
+    // Calculate the total cost (FScore)
+    public float FScore() => gScore + hScore;
 
     int checkNumber;
 
@@ -37,12 +48,12 @@ public class TileMono : MonoBehaviour
     {
         //ALL DATA COMES FROM CLONE
         tileSOData = InstantiateTileSOData(data);
-        name = $"Tile ({tileSOData.tileBiome})";
+        name = $"Tile ({tileSOData.tileBiome}, {x}. {y})";
         tileNo = GridManager.Instance.tileNo;
         //ADD X,Y COORDS HERE?
         tileX = x; tileY = y;
 
-        spriteRenderer.color = tileSOData.tileColour;
+        spriteRenderer.color = tileSOData.tileColor;
 
 
     }
@@ -60,10 +71,10 @@ public class TileMono : MonoBehaviour
     public void Check1()
     {
 
-        List<PlantSO> tilesToRemove = new List<PlantSO>();
+       
 
-        foreach (PlantSO plant in plantSlots)
-        {
+        foreach (PlantSO plant in plantSlots) 
+        { 
             checkNumber = UnityEngine.Random.Range(0, plant.seedsPerYear);
 
             if (checkNumber == 4)
@@ -76,24 +87,41 @@ public class TileMono : MonoBehaviour
             {
 
             }
-            if (plant.thirstLevel <= 0)
+            if (plant.HP <= 0)
             {
-                tilesToRemove.Add(plant);
-            }
-            if (plant.hungerLevel <= 0)
-            {
-                tilesToRemove.Add(plant);
-
+                Debug.Log(plant.plantName + "died");
+                RemovePlant(plant);
             }
         }
 
 
-        foreach (var tile in tilesToRemove)
-        {
-            RemovePlant(tile);
-        }
+        
     }
+    public bool AddAnimal(AnimalSO animal)
+    {
+        if (animalSlots.Count < maxAnimalSlots)
+        {
+            GameObject animalObject = new GameObject(animal.animalName);
+            animalObject.transform.SetParent(transform);
 
+            if (animal.animalName == "Rabbit")
+            {
+                RabbitScripts animalData = animalObject.AddComponent<RabbitScripts>();
+                animalData.animalSO = animal;
+            }
+
+           if  (animal.animalName == "Fox")
+            {
+                Fox animalData = animalObject.AddComponent<Fox>();
+                animalData.animalSO = animal;
+            }
+
+
+            animalSlots.Add(animal);
+            return true;
+        }
+        return false;
+    }
 
 
     public TileSO InstantiateTileSOData(TileSO data)
@@ -102,7 +130,7 @@ public class TileMono : MonoBehaviour
 
         TileSO newTile = ScriptableObject.CreateInstance<TileSO>();
         newTile.tileBiome = data.tileBiome;
-        newTile.tileColour = data.tileColour;
+        newTile.tileColor = data.tileColor;
         newTile.weight = data.weight;
         newTile.waterLeve = data.waterLeve;
         newTile.sunlightLevel = data.sunlightLevel;
@@ -122,15 +150,61 @@ public class TileMono : MonoBehaviour
         else if (PlantSelectManager.Instance.plantingMode != true)
         {
             UIManager.Instance.OpenTilePanel(this);
-
+            
         }
 
-
+        
 
     }
 
 
+    public void UpdateFoodAndWaterRabbit(AnimalSO animal)
+    {
+        foreach (PlantSO plant in plantSlots)
+        {
+            foreach (AnimalSO.EdiblePlants EP in animal.ediblePlants)
+            {
+                if (EP.ediblePlant.plantName == plant.plantName)
+                {
+                    animal.hungerLevel += 10;
+                    plant.HP -= 40;
+                    Debug.Log($"{animal.animalName} ate {plant.plantName} on tile {tileX},{tileY}");
 
+                    if (plant.HP <= 0)
+                    {
+                        RemovePlant(plant);
+                    }
+                    break;
+                }
+            }
+        }
+
+        
+        foreach (TileMono neighbor in GridManager.Instance.GetNeighboursOfTIle(tileX, tileY))
+        {
+            if (neighbor.tileSOData.tileBiome == "Water") 
+            {
+                animal.thirstLevel = 100;
+                Debug.Log($"{animal.animalName} drank water from nearby tile {neighbor.tileX},{neighbor.tileY}");
+                return;
+            }
+        }
+    }
+
+    public void UpdateFoodAndWaterFox(AnimalSO animal)
+    {
+      
+
+        foreach (TileMono neighbor in GridManager.Instance.GetNeighboursOfTIle(tileX, tileY))
+        {
+            if (neighbor.tileSOData.tileBiome == "Water")
+            {
+                animal.thirstLevel = 100;
+                Debug.Log($"{animal.animalName} drank water from nearby tile {neighbor.tileX},{neighbor.tileY}");
+                return;
+            }
+        }
+    }
 
 
 
@@ -152,28 +226,34 @@ public class TileMono : MonoBehaviour
                 plantData.plantso = selectedPlant;
             }
 
+            if (selectedPlant.plantName == "Grass")
+            {
+                Grass plantData = plantObject.AddComponent<Grass>();
+                plantData.plantso = selectedPlant;
+            }
+
             return true;
         }
         else
         {
             Debug.Log("no more tilees available");
             return false;
-        }
+        } 
     }
 
-
+    
     public void RemovePlant(PlantSO plant)
     {
         for (int i = 0; i < plantSlots.Count; i++)
         {
             if (plantSlots[i].plantID == plant.plantID)
             {
-                Debug.Log("removed plant");
-
+                Debug.Log("removed plant" + plant.plantName);
+               
                 plant.dead = true;
                 plantSlots.RemoveAt(i);
 
-
+                
             }
         }
     }
@@ -186,3 +266,4 @@ public class TileMono : MonoBehaviour
 
 }
 
+        

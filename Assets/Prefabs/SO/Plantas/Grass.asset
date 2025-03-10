@@ -9,29 +9,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0ae4724b357b894799d9c7dae88a8c8, type: 3}
-  m_Name: Fox
+  m_Script: {fileID: 11500000, guid: 768b4453f99211e46a05c03a1a64d5ac, type: 3}
+  m_Name: Grass
   m_EditorClassIdentifier: 
   preferredTiles:
   - preferredTile: {fileID: 11400000, guid: dbe281f4b71daae4c948b9c53185e990, type: 2}
     weightBoost: 30
-  ediblePlants:
-  - ediblePlant: {fileID: 11400000, guid: fa9660966808cd84db607d32257b0dcf, type: 2}
-    weightBoost: 0
-  animalName: Fox
-  animalID: 0
-  animalSprite: {fileID: 0}
+  plantName: Grass
+  plantID: 1
+  plantFamily: Trees
+  plantSprite: {fileID: 21300008, guid: 14aefffd3622c7347aad64f2bed35801, type: 3}
   HP: 100
   hungerLevel: 100
   thirstLevel: 100
   dead: 0
   weight: 0
   totalGrowthTicks: 0
-  ticksNeededOne: 0
-  ticksNeededTwo: 0
-  ticksNeededThree: 0
-  ticksNeededFour: 0
-  animalMaturity: 0
-  animalMaturityName: 
-  nextAnimalMaturityName: 
-  seedsPerYear: 2000
+  ticksNeededOne: 17520
+  ticksNeededTwo: 87600
+  ticksNeededThree: 350400
+  ticksNeededFour: 1314000
+  plantMaturity: 0
+  plantMaturityName: 
+  nextPlantMaturityName: 
+  seedsPerYear: 365

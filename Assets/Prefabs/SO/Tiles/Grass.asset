@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Grass
   m_EditorClassIdentifier: 
   tileBiome: Grass
-  tileColour: {r: 0, g: 1, b: 0.062781096, a: 0}
+  tileColor: {r: 0, g: 1, b: 0.15520024, a: 1}
   weight: 1
   sunlightLevel: 0
   fertilityLevel: 0

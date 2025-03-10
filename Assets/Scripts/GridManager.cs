@@ -17,6 +17,7 @@ public class GridManager : MonoBehaviour
     public GameObject tilePrefab; //Add hexagonal sprite prefab 
     public TileSO[] tileTypes; //DO NOT CHANGE NAME ERRORRSSFOS OIFSCE 
     public PlantSO[] plants;
+    public AnimalSO[] animals;
 
     public TileMono[,] grid;
     private void Awake()
@@ -57,6 +58,7 @@ public class GridManager : MonoBehaviour
                 grid[x, y] = tile;
                 tileNo++;
                 SpawnPlants(tile, x, y);
+                SpawnAnimals(tile, x, y);
             }
         }
     }
@@ -95,7 +97,7 @@ public class GridManager : MonoBehaviour
             totalWeight += tile.Value;
         }
 
-        if (totalWeight == 0) return;
+        if (totalWeight == 0) return; 
 
         randomWeight = UnityEngine.Random.Range(0f, totalWeight);
 
@@ -109,12 +111,95 @@ public class GridManager : MonoBehaviour
             {
                 Debug.Log("planted" + tile.Key);
                 PlantSelectManager.Instance.TryPlantOnTile(tile.Key, plantso);
-                return;
+                return; 
             }
         }
     }
 
+    public int animalsSpawned = 0;
+    public void SpawnAnimals(TileMono tileMono, int x, int y)
+    {
+        Dictionary<AnimalSO, float> weightAndPlants = new Dictionary<AnimalSO, float>();  //KEY  = TILE. VALUE = WEIGHT
 
+
+        //IF LESS PLANTS THAN MAX AND THERES A RANDOM CHANCE THAT NO PLANTS SPAWN ON TILE THEN:
+        //LOOK THRU PLANTSOLIST
+        //FIND PREFERRED TILES FOR THE PLANTSO
+        //ADD WEIGHTBOOST
+        //STORE WEIGHT
+
+
+
+
+        tileMono = grid[x, y];
+        int maxAnimals = 5;
+        int plantsPlanted = 0;
+        float repeatChance = 0.1f;
+
+        if ((plantsPlanted < maxAnimals && UnityEngine.Random.value < repeatChance) || animalsSpawned < 2)
+        {
+            foreach (var animal in animals)
+            {
+                Debug.Log("animals");
+
+                bool prefersTile = false;
+                float animalWeight = animal.weight;
+
+
+                TileSO tileData = tileMono.tileSOData;
+
+
+                foreach (var preferredTile in animal.preferredTiles)
+                {
+                    if (preferredTile.preferredTile.tileBiome == tileData.tileBiome)
+                    {
+                        animalWeight += preferredTile.weightBoost;
+                        prefersTile = true;
+
+
+                    }
+                }
+
+                if (prefersTile)
+                {
+                    weightAndPlants[animal] = animalWeight;
+                }
+
+
+
+            }
+
+
+
+            float totalWeight = 0;
+            foreach (var animal in weightAndPlants)
+            {
+                totalWeight += animal.Value;
+            }
+
+            float randomWeight = UnityEngine.Random.Range(0f, totalWeight);
+
+            float cumulativeWeight = 0f;
+            foreach (var animal in weightAndPlants)
+            {
+                cumulativeWeight += animal.Value;
+
+                if (randomWeight <= cumulativeWeight)
+                {
+                    AnimalSO animalso = animal.Key;
+                    animalso = animalso.CloneAnimalSO(animal.Key);
+                    animalso.spawnTile = tileMono;
+                    animalso.animalID += 1;
+
+                    tileMono.AddAnimal(animalso);
+                    animalsSpawned++;
+                    Debug.Log("animal");
+
+                }
+            }
+
+        }
+    }
 
 
     public void SpawnPlants(TileMono tileMono, int x, int y)
@@ -269,7 +354,7 @@ public class GridManager : MonoBehaviour
         {
             if (value.Value < 0)
             {
-                tilesToRemove.Add(value.Key);
+                tilesToRemove.Add(value.Key);  
             }
             else
             {
@@ -277,7 +362,7 @@ public class GridManager : MonoBehaviour
             }
         }
 
-
+      
         foreach (var tile in tilesToRemove)
         {
             weightedTilesDictionary.Remove(tile);
@@ -309,18 +394,86 @@ public class GridManager : MonoBehaviour
 
         Debug.Log("returned");
         return tileTypes[0];
-
+            
     }
 
 
-    TileMono[] GetNeighboursOfTIle(int x, int y)
-    {
-        List<TileMono> neighborsList = new List<TileMono>();
+    public TileMono[] GetNeighboursOfTIle(int x, int y)
+        {
+            List<TileMono> neighborsList = new List<TileMono>();
 
+
+            int[][] directionsToNeighbourTile = new int[][]
+            {
+            //         X    Y
+            new int[] { 0,  1 },
+            new int[] { 0, -1 }, // V
+
+
+            new int[] { 1,  0 },
+            new int[] { -1, 0 }, // H
+           
+            
+
+            new int[] { 1, -1 },
+            new int[] { -1, 1 } // D
+            };
+
+            foreach (var direction in directionsToNeighbourTile)
+            {
+                int neighbourX = x + direction[0];
+                int neighbourY = y + direction[1];
+                if (neighbourX >= 0 && neighbourX < gridWidth
+                    && neighbourY >= 0 && neighbourY < gridHeight)
+                {
+                    neighborsList.Add(grid[neighbourX, neighbourY]);
+                }
+            }
+
+            return neighborsList.ToArray();
+        }
+
+    public List<TileMono> GetTilesWithinRadius(int x, int y, int radius)
+    {
+        /*class BreadthFirstSearch
+{
+    static void Search(Graph<string> graph, string start)
+    {
+        var frontier = new Queue<string>();
+        frontier.Enqueue(start);
+
+        var reached = new HashSet<string>();
+        reached.Add(start);
+
+        while (frontier.Count > 0)
+        {
+            var current = frontier.Dequeue();
+
+            Console.WriteLine("Visiting {0}", current);
+            foreach (var next in graph.Neighbors(current))
+            {
+                if (!reached.Contains(next)) {
+                    frontier.Enqueue(next);
+                    reached.Add(next);
+                }
+            }
+        }
+
+        https://www.redblobgames.com/pathfinding/a-star/implementation.html#csharp
+    }*/
+
+
+        List<TileMono> tilesWithinRadius = new List<TileMono>();
+
+        Queue<(int x, int y, int distance)> queue = new Queue<(int x, int y, int distance)>();
+        queue.Enqueue((x, y, 0)); 
+
+        HashSet<(int x, int y)> reached = new HashSet<(int x, int y)>();
+        reached.Add((x, y));
 
         int[][] directionsToNeighbourTile = new int[][]
         {
-            //         X    Y
+           //         X    Y
             new int[] { 0,  1 },
             new int[] { 0, -1 }, // V
 
@@ -334,34 +487,50 @@ public class GridManager : MonoBehaviour
             new int[] { -1, 1 } // D
         };
 
-        foreach (var direction in directionsToNeighbourTile)
+        while (queue.Count > 0)
         {
-            int neighbourX = x + direction[0];
-            int neighbourY = y + direction[1];
-            if (neighbourX >= 0 && neighbourX < gridWidth
-                && neighbourY >= 0 && neighbourY < gridHeight)
+            var (currentX, currentY, distance) = queue.Dequeue();
+
+            tilesWithinRadius.Add(grid[currentX, currentY]);
+
+            if (distance >= radius)
             {
-                neighborsList.Add(grid[neighbourX, neighbourY]);
+                break;
+            }
+
+            foreach (var direction in directionsToNeighbourTile)
+            {
+                int neighbourX = currentX + direction[0];
+                int neighbourY = currentY + direction[1];
+
+                if (neighbourX >= 0 && neighbourX < gridWidth &&
+                    neighbourY >= 0 && neighbourY < gridHeight &&
+                    !reached.Contains((neighbourX, neighbourY)))
+                {
+                    reached.Add((neighbourX, neighbourY));
+                    queue.Enqueue((neighbourX, neighbourY, distance + 1));
+                }
             }
         }
 
-        return neighborsList.ToArray();
+        return tilesWithinRadius;
     }
 
     Vector2 CalculateHexPositionOfTile(int x, int y)
-    {
-        float xOffset = tileSize * 0.75f;
-        float yOffset = tileSize * Mathf.Sqrt(3) / 2f;
-
-        float xPos = x * xOffset;
-        float yPos = y * yOffset;
-
-
-        if (x % 2 == 1)
         {
-            yPos += yOffset / 2f;
-        }
+            float xOffset = tileSize * 0.75f;
+            float yOffset = tileSize * Mathf.Sqrt(3) / 2f;
 
-        return new Vector2(xPos, yPos);
+            float xPos = x * xOffset;
+            float yPos = y * yOffset;
+
+
+            if (x % 2 == 1)
+            {
+                yPos += yOffset / 2f;
+            }
+
+            return new Vector2(xPos, yPos);
+        }
     }
-}
+

@@ -9,18 +9,24 @@ public class PlantSO : ScriptableObject
      [System.Serializable]
     public class TilePreference
     {
+
         public TileSO preferredTile;
         public float weightBoost;
     }
 
     public TilePreference[] preferredTiles;
+
+
+   
+
+
     public string plantName;
     public int plantID;
 
     public string plantFamily;
     public Sprite plantSprite;
 
-    public int HP;
+    public double HP;
     public double hungerLevel;
     public double thirstLevel;
     public bool dead = false;
