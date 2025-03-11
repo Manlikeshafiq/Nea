@@ -73,7 +73,7 @@ public class GridManager : MonoBehaviour
         {
             if (neighbour != null)
             {
-                weightedTilesDictionary[neighbour] = 0.1f; // Base weight for all neighbors
+                weightedTilesDictionary[neighbour] = 0.1f; 
                 TileSO neighbourTileData = neighbour.tileSOData;
 
                 foreach (var plant in plants)
@@ -314,10 +314,10 @@ public class GridManager : MonoBehaviour
                     TileSO neighbourTileData = neighbour.tileSOData;
 
 
-                    foreach (var preferredNeighbour in tile.preferredNeighbors)
+                    foreach (var preferredNeighbour in tile.preferredneighbours)
                     {
 
-                        if (preferredNeighbour.neighborTile.tileBiome == neighbourTileData.tileBiome)
+                        if (preferredNeighbour.neighbourTile.tileBiome == neighbourTileData.tileBiome)
                         {
 
                             weightedTilesDictionary[tile] += preferredNeighbour.weightBoost;
@@ -400,7 +400,7 @@ public class GridManager : MonoBehaviour
 
     public TileMono[] GetNeighboursOfTIle(int x, int y)
         {
-            List<TileMono> neighborsList = new List<TileMono>();
+            List<TileMono> neighborusList = new List<TileMono>();
 
 
             int[][] directionsToNeighbourTile = new int[][]
@@ -426,11 +426,11 @@ public class GridManager : MonoBehaviour
                 if (neighbourX >= 0 && neighbourX < gridWidth
                     && neighbourY >= 0 && neighbourY < gridHeight)
                 {
-                    neighborsList.Add(grid[neighbourX, neighbourY]);
+                    neighborusList.Add(grid[neighbourX, neighbourY]);
                 }
             }
 
-            return neighborsList.ToArray();
+            return neighborusList.ToArray();
         }
 
     public List<TileMono> GetTilesWithinRadius(int x, int y, int radius)

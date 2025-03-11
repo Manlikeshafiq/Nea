@@ -180,12 +180,12 @@ public class TileMono : MonoBehaviour
         }
 
         
-        foreach (TileMono neighbor in GridManager.Instance.GetNeighboursOfTIle(tileX, tileY))
+        foreach (TileMono neighbour in GridManager.Instance.GetNeighboursOfTIle(tileX, tileY))
         {
-            if (neighbor.tileSOData.tileBiome == "Water") 
+            if (neighbour.tileSOData.tileBiome == "Water") 
             {
                 animal.thirstLevel = 100;
-                Debug.Log($"{animal.animalName} drank water from nearby tile {neighbor.tileX},{neighbor.tileY}");
+                Debug.Log($"{animal.animalName} drank water from nearby tile {neighbour.tileX},{neighbour.tileY}");
                 return;
             }
         }
@@ -195,12 +195,12 @@ public class TileMono : MonoBehaviour
     {
       
 
-        foreach (TileMono neighbor in GridManager.Instance.GetNeighboursOfTIle(tileX, tileY))
+        foreach (TileMono neighbour in GridManager.Instance.GetNeighboursOfTIle(tileX, tileY))
         {
-            if (neighbor.tileSOData.tileBiome == "Water")
+            if (neighbour.tileSOData.tileBiome == "Water")
             {
                 animal.thirstLevel = 100;
-                Debug.Log($"{animal.animalName} drank water from nearby tile {neighbor.tileX},{neighbor.tileY}");
+                Debug.Log($"{animal.animalName} drank water from nearby tile {neighbour.tileX},{neighbour.tileY}");
                 return;
             }
         }

@@ -14,6 +14,7 @@ public class RabbitScripts : MonoBehaviour
     public AnimalSO animalSO;
     public List<string> maturityNames = new List<string> { "Cub", "Young", "Young Adult", "Mature", "Old Ass" };
     public int currentState = 0;
+    public int reproductionCooldown = 720;
     //0 = idle - staying in its home tile (tile it spawned on)
     //1 = looking for water - A* pathfinding
     //2 = looking for food - A*
@@ -42,7 +43,7 @@ public class RabbitScripts : MonoBehaviour
             UpdateFoodAndWater(t);
             UpdateState(t);
             animalSO.TicksNeeded();
-
+            reproductionCooldown--;
             if (animalSO.animalMaturity >= 0 && animalSO.animalMaturity < maturityNames.Count)
             {
                 animalSO.animalMaturityName = maturityNames[animalSO.animalMaturity];
@@ -78,6 +79,11 @@ public class RabbitScripts : MonoBehaviour
             {
                 currentState = 2;
                 PathfindToFood(t);
+            }
+            else if (animalSO.animalMaturity >= 2 && reproductionCooldown <= 0)
+            {
+                currentState = 4;
+                FindRabbitForRepro(t);
             }
             else
             {
@@ -173,11 +179,72 @@ public class RabbitScripts : MonoBehaviour
         {
             Debug.Log("moving randomly");
             CheckForSafeTiles(currentTile);
+            i++;
         }
        
     }
 
+    public void FindRabbitForRepro(TileMono t)
+    {
+        List<TileMono> tilesInRadius = GridManager.Instance.GetTilesWithinRadius(t.tileX, t.tileY, 3);
 
+
+        TileMono nearestRabbitTile = null;
+        float minDistance = float.MaxValue;
+
+        foreach (var tile in tilesInRadius)
+        {
+            foreach (var animal in tile.animalSlots)
+            {
+                if (animal.animalName == "Rabbit" && tile.tileSOData.tileBiome != "Water")
+                {
+                    float distance = AStarManager.instance.HexDistance(t, tile);
+                    if (distance < minDistance)
+                    {
+                        minDistance = distance;
+                        nearestRabbitTile = tile;
+                        Debug.Log("found repro Rabbit" + nearestRabbitTile + nearestRabbitTile.tileX + nearestRabbitTile.tileY + tile.tileX + t.tileY);
+                    }
+
+                }
+            }
+        }
+
+        if (nearestRabbitTile == null) { Debug.Log("null"); };
+
+        if (nearestRabbitTile != null)
+        {
+            Debug.Log("pathing");
+            List<TileMono> path = AStarManager.instance.GeneratePath(t, nearestRabbitTile);
+
+            if (path != null && path.Count > 0)
+            {
+                Debug.Log("moving to find repro rabbit at " + nearestRabbitTile + nearestRabbitTile.tileX + nearestRabbitTile.tileY);
+
+                MoveToTile(nearestRabbitTile);
+
+                if (path[0].tileX == nearestRabbitTile.tileY && path[0].tileY == nearestRabbitTile.tileY)
+                {
+                    Reproduce(nearestRabbitTile);
+                }
+            }
+
+
+        }
+
+        else
+        {
+            Debug.Log("No rabbits found within radius.");
+        }
+    }
+
+    public void Reproduce(TileMono t)
+    {
+        GridManager.Instance.SpawnAnimals(t, t.tileX, t.tileY);
+        animalSO.spawnTile = t;
+        reproductionCooldown = 720;
+
+    }
 
     //MERGE BOTH OF THESE IF TIME
 
@@ -200,6 +267,19 @@ public class RabbitScripts : MonoBehaviour
 
 
         }
+
+        for (int i = 0; i < t.animalSlots.Count; i++)
+        {
+            if (t.animalSlots[i].animalName == "Fox"
+                )
+            {
+                Debug.Log("neighbour" + t + t.tileX + t.tileY + "has fox");
+                return true;
+            }
+        }
+
+
+    
         return false;
     }
 
@@ -209,9 +289,18 @@ public class RabbitScripts : MonoBehaviour
         foreach (TileMono neighbour in GridManager.Instance.GetNeighboursOfTIle(t.tileX, t.tileY))
         {
             bool foxInTile = false;
+            bool foxInSpawn = false;
 
+            for (int i = 0; i < t.animalSlots.Count; i++)
+            {
+                if (t.animalSlots[i].animalName == "Fox")
+                {
+                    foxInSpawn = true;
 
-     
+                    Debug.Log("neighbour" + t + t.tileX + t.tileY + "has fox");
+                }
+            }
+
 
             if (neighbour.animalSlots != null)
             {
@@ -223,7 +312,7 @@ public class RabbitScripts : MonoBehaviour
                     }
                 }
             }   
-            if (neighbour.tileSOData.tileBiome != "Water" && foxInTile == false)
+            if (neighbour.tileSOData.tileBiome != "Water" && (foxInTile == false || foxInSpawn == true ))
             {
                 if (t != neighbour)
                 {
@@ -238,7 +327,7 @@ public class RabbitScripts : MonoBehaviour
 
         }
 
-
+        
         MoveToSafeTile(safeTiles);
     }    
 
@@ -252,7 +341,7 @@ public class RabbitScripts : MonoBehaviour
                 TileMono newTile = safeTiles[Random.Range(0, safeTiles.Count)];
                 transform.SetParent(newTile.transform);
                 transform.position = newTile.transform.position;
-                Debug.Log("Rabbit moved to a safer tile!" + newTile);
+                Debug.Log("Rabbit moved to a safer tile" + newTile);
                 animalSO.attackproficiency -= 0.3f;
             }
         }
@@ -302,10 +391,7 @@ public class RabbitScripts : MonoBehaviour
             transform.position = nextTile.transform.position;
             Debug.Log($"Rabbit moved to tile: {nextTile.tileX}, {nextTile.tileY}");
         }
-        else if (path == null)
-        {
-            Debug.Log("kys");
-        }
+       
         else
         {
             Debug.Log("No path found to the target tile.");

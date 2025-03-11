@@ -501,11 +501,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1459365691191889268, guid: 87dee116ff2ea9c45b6f544145b8d98f, type: 3}
       propertyPath: gridWidth
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1459365691191889268, guid: 87dee116ff2ea9c45b6f544145b8d98f, type: 3}
       propertyPath: gridHeight
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1459365691191889268, guid: 87dee116ff2ea9c45b6f544145b8d98f, type: 3}
       propertyPath: tilePrefab
@@ -1179,7 +1179,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6618220773761037158, guid: 50ae28d005067cf46bf9409de12806d2, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0.0009608409
+      value: 0.000040357016
       objectReference: {fileID: 0}
     - target: {fileID: 6618220773761037158, guid: 50ae28d005067cf46bf9409de12806d2, type: 3}
       propertyPath: m_AnchoredPosition.y

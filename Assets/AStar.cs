@@ -53,19 +53,19 @@ public class AStarManager : MonoBehaviour
                 return path;
             }
 
-            foreach (TileMono neighbor in GridManager.Instance.GetNeighboursOfTIle(currentTile.tileX, currentTile.tileY))
+            foreach (TileMono neighbour in GridManager.Instance.GetNeighboursOfTIle(currentTile.tileX, currentTile.tileY))
             {
-                float heldGScore = currentTile.gScore + HexDistance(currentTile, neighbor);
+                float heldGScore = currentTile.gScore + HexDistance(currentTile, neighbour);
 
-                if (heldGScore < neighbor.gScore)
+                if (heldGScore < neighbour.gScore)
                 {
-                    neighbor.cameFrom = currentTile;
-                    neighbor.gScore = heldGScore;
-                    neighbor.hScore = HexDistance(neighbor, endTile);
+                    neighbour.cameFrom = currentTile;
+                    neighbour.gScore = heldGScore;
+                    neighbour.hScore = HexDistance(neighbour, endTile);
 
-                    if (!openSet.Contains(neighbor))
+                    if (!openSet.Contains(neighbour))
                     {
-                        openSet.Add(neighbor);
+                        openSet.Add(neighbour);
                     }
                 }
             }

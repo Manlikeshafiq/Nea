@@ -20,11 +20,11 @@ public class TileSO : ScriptableObject
 
 
     [System.Serializable]
-    public class NeighborPreference
+    public class NeighbourPreference
     {
-        public TileSO neighborTile;
+        public TileSO neighbourTile;
         public float weightBoost;
     }
 
-    public NeighborPreference[] preferredNeighbors;
+    public NeighbourPreference[] preferredneighbours;
 }
