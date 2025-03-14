@@ -12,12 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0ae4724b357b894799d9c7dae88a8c8, type: 3}
   m_Name: Fox
   m_EditorClassIdentifier: 
+  plantSOList: []
   preferredTiles:
   - preferredTile: {fileID: 11400000, guid: dbe281f4b71daae4c948b9c53185e990, type: 2}
     weightBoost: 30
   ediblePlants:
   - ediblePlant: {fileID: 11400000, guid: fa9660966808cd84db607d32257b0dcf, type: 2}
     weightBoost: 0
+  spawnTile: {fileID: 0}
   animalName: Fox
   animalID: 0
   animalSprite: {fileID: 0}
@@ -25,12 +27,13 @@ MonoBehaviour:
   hungerLevel: 100
   thirstLevel: 100
   dead: 0
+  attackproficiency: 9
   weight: 0
   totalGrowthTicks: 0
-  ticksNeededOne: 0
-  ticksNeededTwo: 0
-  ticksNeededThree: 0
-  ticksNeededFour: 0
+  ticksNeededOne: 1000
+  ticksNeededTwo: 4000
+  ticksNeededThree: 16000
+  ticksNeededFour: 30000
   animalMaturity: 0
   animalMaturityName: 
   nextAnimalMaturityName: 

@@ -16,8 +16,8 @@ MonoBehaviour:
   tileColor: {r: 1, g: 0.5731888, b: 0, a: 1}
   weight: 1
   sunlightLevel: 0
-  fertilityLevel: 0
-  waterLeve: 100
+  fertilityLevel: 40
+  waterLeve: 20
   preferredneighbours:
   - neighbourTile: {fileID: 11400000}
     weightBoost: 5

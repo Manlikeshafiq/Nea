@@ -53,7 +53,7 @@ public class Fox : MonoBehaviour
 
             }
 
-
+          
 
             if (animalSO.animalMaturity >= 0 && animalSO.animalMaturity < maturityNames.Count)
             {
@@ -252,18 +252,28 @@ public class Fox : MonoBehaviour
 
         foreach (var tile in tilesInRadius)
         {
+
+            if (tile.animalSlots == null)
+            {
+                Debug.LogWarning($"Animal slots for tile at ({tile.tileX}, {tile.tileY}) are null.");
+                continue;
+            }
             foreach (var animal in tile.animalSlots)
             {
-                if (animal.animalName == "Rabbit" && tile.tileSOData.tileBiome != "Water")
+                if (animal != null)
                 {
-                    float distance = AStarManager.instance.HexDistance(t, tile);
-                    if (distance < minDistance)
+                    if (animal.animalName == "Rabbit" && tile.tileSOData.tileBiome != "Water")
                     {
-                        minDistance = distance;
-                        nearestRabbitTile = tile;
-                        Debug.Log("found rabbit" + nearestRabbitTile + nearestRabbitTile.tileX + nearestRabbitTile.tileY + tile.tileX + t.tileY);
-                    }
+                        float distance = AStarManager.instance.HexDistance(t, tile);
+                        if (distance < minDistance)
+                        {
+                            minDistance = distance;
+                            nearestRabbitTile = tile;
+                            Debug.Log("found rabbit" + nearestRabbitTile + nearestRabbitTile.tileX +
+                                      nearestRabbitTile.tileY + tile.tileX + t.tileY);
+                        }
 
+                    }
                 }
             }
         }

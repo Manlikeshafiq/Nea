@@ -29,12 +29,12 @@ MonoBehaviour:
   dead: 0
   attackproficiency: 9
   weight: 0
-  totalGrowthTicks: 386
-  ticksNeededOne: 0
-  ticksNeededTwo: 0
-  ticksNeededThree: 0
-  ticksNeededFour: 0
-  animalMaturity: 4
-  animalMaturityName: Old Ass
+  totalGrowthTicks: 0
+  ticksNeededOne: 1000
+  ticksNeededTwo: 4000
+  ticksNeededThree: 16000
+  ticksNeededFour: 3000
+  animalMaturity: 0
+  animalMaturityName: 
   nextAnimalMaturityName: 
   seedsPerYear: 2000
