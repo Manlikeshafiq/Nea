@@ -4,10 +4,9 @@ using System;
 public class TimeTick : MonoBehaviour
 {
     public static event Action OnTick;
-    private float tickInterval = 1;
+    public float tickInterval = 1;
     private float timeCount;
-    public int tick { get; private set; }
-
+    public int tick;
 
     public static TimeTick Instance;
     public bool dayOrNight = true;

@@ -1,99 +1,42 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
+using System.Collections.Generic;
 
-public class PlantTreeUpdates : MonoBehaviour
+
+public class PlantTreeUpdates : PlantManager
 {
-    public PlantSO plantso;
-    private List<string> maturityNames = new List<string> { "Seedling", "Sapling", "Young", "Mature", "Old Ass" };
-
-
-    public void Start()
+    public override void Start()
     {
-        TimeTick.OnTick += UpdatePlant;
+        maturityNames = new List<string> { "Seedling", "Sapling", "Young", "Mature", "Old Ass" };
+        plantSO.hungerReductionRate = 0.003f;
+        plantSO.thirstReductionRate = 0.15f;
+        base.Start();
     }
 
-    void OnDestroy()
+
+   
+    protected override void UpdateFoodAndWater()
     {
+        TileMono t = GetComponentInParent<TileMono>();
+        int oneDay = TimeTick.Instance.tick % 24;
+        int quarterDay = TimeTick.Instance.tick % 6;
 
-    }
-
-    public void UpdatePlant()
-    {
-
-        if (plantso.dead == false)
+        if (oneDay == 0)
         {
-            plantso.totalGrowthTicks += 1;
-            plantso.hungerLevel -= 0.005f;
-            plantso.thirstLevel -= 0.198f;
-
-
-            UpdateFoodAndWater();
-
-            plantso.TicksNeeded();
-
-            if (plantso.plantMaturity >= 0 && plantso.plantMaturity < maturityNames.Count)
+            int randomChanceWater = Random.Range(0, t.tileSOData.waterLeve);
+            if (randomChanceWater < t.tileSOData.waterLeve / 2)
             {
-                plantso.plantMaturityName = maturityNames[plantso.plantMaturity];
-
+                plantSO.thirstLevel += 0.5f;
+                plantSO.HP += 0.1f;
             }
-            else
-            {
-                plantso.plantMaturityName = "Unknown";
-
-            }
-
-            if (plantso.plantMaturity + 1 < maturityNames.Count) { plantso.nextPlantMaturityName = maturityNames[plantso.plantMaturity + 1]; }
         }
 
-        if (plantso.plantMaturity >= 4)
+        if (quarterDay == 0 && TimeTick.Instance.dayOrNight)
         {
-            plantso.HP -= 4;
+            int randomChanceFood = Random.Range(0, t.tileSOData.fertilityLevel);
+            if (randomChanceFood < t.tileSOData.fertilityLevel / 2)
+            {
+                plantSO.hungerLevel += 0.2f;
+            }
         }
     }
-
-
-    public void UpdateFoodAndWater()
-    {
-
-        
-
-            TileMono t = GetComponentInParent<TileMono>();
-            int oneDay = (TimeTick.Instance.tick % 24);
-            int quarterDay = (TimeTick.Instance.tick % 6);
-            if (oneDay == 0)
-            {
-                Debug.Log("day");
-                int randomChanceWater = Random.Range(0, t.tileSOData.waterLeve);
-                if (randomChanceWater < t.tileSOData.waterLeve / 2)
-                {
-                    Debug.Log($"{t.ToString()} has gotten + 0.5 water");
-                plantso.HP += 0.1f;
-
-                plantso.thirstLevel += 0.5f;
-                
-                }
-
-
-            }
-
-            if (quarterDay == 0)
-            {
-                if (TimeTick.Instance.dayOrNight)
-                {
-                    int randomChanceFood = Random.RandomRange(0, t.tileSOData.fertilityLevel);
-                    if (randomChanceFood < t.tileSOData.fertilityLevel / 2)
-                    {
-                        Debug.Log($"{t.ToString()} has gotten + 0.2 food");
-                        plantso.thirstLevel += 0.2f;
-                    }
-                }
-            }
-        
-    }
-
-    
 }
-
-

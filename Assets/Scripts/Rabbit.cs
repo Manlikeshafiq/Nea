@@ -38,7 +38,18 @@ public class RabbitScripts : MonoBehaviour
             animalSO.totalGrowthTicks += 1;
             animalSO.hungerLevel -= 1.4f;
             animalSO.thirstLevel -= 2;
+            reproductionCooldown--;
 
+            if (animalSO.thirstLevel < 0)
+            {
+                t.RemoveAnimal(animalSO);   
+
+            }
+
+            if (animalSO.hungerLevel < 0)
+            {
+                t.RemoveAnimal(animalSO);
+            }
 
             UpdateFoodAndWater(t);
             UpdateState(t);
@@ -56,6 +67,10 @@ public class RabbitScripts : MonoBehaviour
             }
 
             if (animalSO.animalMaturity + 1 < maturityNames.Count) { animalSO.nextAnimalMaturityName = maturityNames[animalSO.animalMaturity + 1]; }
+        }
+        else
+        {
+           
         }
     }
 
@@ -190,7 +205,7 @@ public class RabbitScripts : MonoBehaviour
 
 
         TileMono nearestRabbitTile = null;
-        float minDistance = float.MaxValue;
+        float minDistance = 999999f;
 
         foreach (var tile in tilesInRadius)
         {
@@ -210,7 +225,6 @@ public class RabbitScripts : MonoBehaviour
             }
         }
 
-        if (nearestRabbitTile == null) { Debug.Log("null"); };
 
         if (nearestRabbitTile != null)
         {
@@ -240,7 +254,7 @@ public class RabbitScripts : MonoBehaviour
 
     public void Reproduce(TileMono t)
     {
-        GridManager.Instance.SpawnAnimals(t, t.tileX, t.tileY);
+        t.AddAnimal(animalSO);
         animalSO.spawnTile = t;
         reproductionCooldown = 720;
 
@@ -257,13 +271,27 @@ public class RabbitScripts : MonoBehaviour
 
             for (int i = 0; i < neighbour.animalSlots.Count; i++)
             {
-                if (neighbour.animalSlots[i].animalName == "Fox" ||
-                    t.animalSlots[i].animalName == "Fox")
+                if (neighbour.animalSlots[i].animalName == "Fox")
+                   
                 {
                     Debug.Log("neighbour" + neighbour + neighbour.tileX + neighbour.tileY + "has fox");
                     return true;
                 }
+
+               
             }
+            for (int i = 0; i < t.animalSlots.Count; i++)
+            {
+                if (t.animalSlots[i].animalName == "Fox")
+
+                {
+                    Debug.Log("neighbour" + t + t.tileX + t.tileY + "has fox");
+                    return true;
+                }
+
+
+            }
+
 
 
         }
@@ -289,13 +317,12 @@ public class RabbitScripts : MonoBehaviour
         foreach (TileMono neighbour in GridManager.Instance.GetNeighboursOfTIle(t.tileX, t.tileY))
         {
             bool foxInTile = false;
-            bool foxInSpawn = false;
 
             for (int i = 0; i < t.animalSlots.Count; i++)
             {
                 if (t.animalSlots[i].animalName == "Fox")
                 {
-                    foxInSpawn = true;
+                    foxInTile = true;
 
                     Debug.Log("neighbour" + t + t.tileX + t.tileY + "has fox");
                 }
@@ -312,7 +339,7 @@ public class RabbitScripts : MonoBehaviour
                     }
                 }
             }   
-            if (neighbour.tileSOData.tileBiome != "Water" && (foxInTile == false || foxInSpawn == true ))
+            if (neighbour.tileSOData.tileBiome != "Water" && (foxInTile == false))
             {
                 if (t != neighbour)
                 {
@@ -334,9 +361,9 @@ public class RabbitScripts : MonoBehaviour
     public void MoveToSafeTile(List<TileMono> safeTiles)
     {
         int roll = Random.Range(0, 10);
-        if (safeTiles.Count > animalSO.attackproficiency)
+        if (safeTiles.Count > 0)
         {
-            if (roll < 5)
+            if (roll < animalSO.attackproficiency)
             {
                 TileMono newTile = safeTiles[Random.Range(0, safeTiles.Count)];
                 transform.SetParent(newTile.transform);
@@ -376,25 +403,22 @@ public class RabbitScripts : MonoBehaviour
 
     private void MoveToTile(TileMono targetTile)
     {
-        // Get the current tile
         TileMono currentTile = GetComponentInParent<TileMono>();
 
 
-        // Use A* to find the path
         List<TileMono> path = AStarManager.instance.GeneratePath(currentTile, targetTile);
 
         if (path != null && path.Count > 0)
-        {
-            // Move the rabbit to the next tile in the path
+        {   
             TileMono nextTile = path[0];
             transform.SetParent(nextTile.transform);
             transform.position = nextTile.transform.position;
             Debug.Log($"Rabbit moved to tile: {nextTile.tileX}, {nextTile.tileY}");
         }
-       
+
         else
         {
-            Debug.Log("No path found to the target tile.");
+            Debug.Log("No path");
         }
 
     }

@@ -26,16 +26,42 @@ public class UIManager : MonoBehaviour
     public TMP_Text tilePlantBodyText3;
     public TMP_Text tilePlantBodyText4;
 
+    public TMP_Text tileAnimalTitleText0;
+    public TMP_Text tileAnimalTitleText1;
+    public TMP_Text tileAnimalTitleText2;
+    public TMP_Text tileAnimalTitleText3;
+    public TMP_Text tileAnimalTitleText4;
+
+    public TMP_Text tileAnimalBodyText0;
+    public TMP_Text tileAnimalBodyText1;
+    public TMP_Text tileAnimalBodyText2;
+    public TMP_Text tileAnimalBodyText3;
+    public TMP_Text tileAnimalBodyText4;
+    public TMP_Text foxesAndRabbits;
+
+
+
     public TMP_Text speed;
     public TMP_Text days;
     public Button addSpeed;
+    public Button pause;
+
     public Button decreaseSpeed;
+    public Button newGame;
 
     public TMP_InputField tileWeight;
+    public TMP_InputField tileBiome;
+
     public TMP_InputField tileSunlight;
     public TMP_InputField tileMaturity;
     public TMP_InputField tileWater;
+    public TMP_InputField gridXSize;
+    public TMP_InputField gridYSize;
+    public TMP_InputField animalsInGame;
+    public TMP_InputField inputFieldbiome;
 
+
+    public TileSO tileso;
     public GameObject tilePanel;
     public TileMono selectedTile;
     bool panelIsOpen = false;
@@ -72,6 +98,8 @@ public class UIManager : MonoBehaviour
         hours = TimeTick.Instance.tick % 24;
 
         days.text = ($"Days - {intdays} Hours - {hours}");
+        foxesAndRabbits.text = ($"Foxes - {GridManager.Instance.foxes} Rabbits - {GridManager.Instance.rabbits}");
+
     }
     public void AddTileToRefreshInfo()
     {
@@ -87,7 +115,11 @@ public class UIManager : MonoBehaviour
         TMP_Text[] plantTitleTexts = { tilePlantTitleText0, tilePlantTitleText1, tilePlantTitleText2, tilePlantTitleText3, tilePlantTitleText4 };
         TMP_Text[] plantBodyTexts = { tilePlantBodyText0, tilePlantBodyText1, tilePlantBodyText2, tilePlantBodyText3, tilePlantBodyText4 };
 
-        if (tile.plantSlots != null && tile.plantSlots.Count > 0)
+
+        TMP_Text[] animalTitleTexts = { tileAnimalTitleText0, tileAnimalTitleText1, tileAnimalTitleText2, tileAnimalTitleText3, tileAnimalTitleText4 };
+        TMP_Text[] animalBodyTexts = { tileAnimalBodyText0, tileAnimalBodyText1, tileAnimalBodyText2, tileAnimalBodyText3, tileAnimalBodyText4 };
+
+        if (tile.plantSlots.Count > 0)
         {
 
             
@@ -98,8 +130,26 @@ public class UIManager : MonoBehaviour
                 plantTitleTexts[i].text = tile.plantSlots[i].plantName;
                 plantBodyTexts[i].text = $"HP - {tile.plantSlots[i].HP} Hunger - {Math.Round(tile.plantSlots[i].hungerLevel, 2)} Thirst - {Math.Round(tile.plantSlots[i].thirstLevel, 2)}\n" +
                                     $"Maturity - {tile.plantSlots[i].plantMaturityName}\n" +
-                                    $"Growth to {tile.plantSlots[i].nextPlantMaturityName} - / []\n";
+                                    $"Growth to {tile.plantSlots[i].nextPlantMaturityName} - / {tile.plantSlots[i].totalGrowthTicks}\n";
             }
+
+           
+        }
+        else if (tile.animalSlots.Count > 0)
+        {
+
+
+            for (int i = 0; i < tile.animalSlots.Count; i++)
+            {
+                animalTitleTexts[i].text = tile.animalSlots[i].animalName;
+                animalBodyTexts[i].text = $"HP - {tile.animalSlots[i].HP} Hunger - {Math.Round(tile.animalSlots[i].hungerLevel, 2)} Thirst - {Math.Round(tile.animalSlots[i].thirstLevel, 2)}\n" +
+                                          $"Maturity - {tile.animalSlots[i].animalMaturityName}\n" +
+                                          $"Growth to {tile.animalSlots[i].nextAnimalMaturityName} - {tile.animalSlots[i].totalGrowthTicks}\n";
+            }
+
+
+
+
         }
         else
         {
@@ -107,6 +157,8 @@ public class UIManager : MonoBehaviour
             {
                 plantTitleTexts[i].text = ("N/a");
                 plantBodyTexts[i].text = ("N/A)");
+                animalTitleTexts[i].text = ("N/A)");
+                animalBodyTexts[i].text = ("N/A)");
             }
         }
 
@@ -156,7 +208,6 @@ public class UIManager : MonoBehaviour
 
        
 
-        TimeTick.OnTick -= AddTileToRefreshInfo;
         TimeTick.OnTick += AddTileToRefreshInfo;
     }
 
@@ -192,13 +243,102 @@ public class UIManager : MonoBehaviour
 
     }
 
+    public int animalsMin;
+
+    public void UpdateAnimals(string inputValue)
+    {
+
+        int newAnimals = Convert.ToInt32(inputValue);
+        GridManager.Instance.animalsMin = newAnimals;
+
+        Debug.Log(GridManager.Instance.animalsMin );
+        Debug.Log(newAnimals + "new");
+
+
+
+
+
+    }
+    public string biome;
+    public void UpdateBiome(string inputValue)
+    {
+        biome = (inputValue);
+       
+
+
+    }
+
+
+
+    public int X;
+
+    public void UpdateX(string inputValue)
+    {
+        
+          int newX = Convert.ToInt32(inputValue);
+          X = newX;
+          
+
+    }
+
+    public int Y;
+    public void UpdateY(string inputValue)
+    {
+        int newY = Convert.ToInt32(inputValue);
+        Y = newY;
+    }
+
+
+
+
+
+
+
+
+
+
+    public void SpeedTick()
+    {
+        TimeTick.Instance.tickInterval /= 1.5f;
+    }
+
+    public void SlowTick()
+    {
+        TimeTick.Instance.tickInterval *= 1.5f;
+    }
+
+    bool paused = false;
+    public void Pause()
+    {
+        if (paused == false)
+        {
+            TimeTick.Instance.tickInterval *= 9999999;
+            paused = true;
+
+        }
+        else
+        {
+            TimeTick.Instance.tickInterval = 1;
+
+        }
+    }
+
+
+
+
+
     public void PanelOpenFalse()
     {
         panelIsOpen = false;
         tilePanel.SetActive(false);
 
-        // Unsubscribe from the event
         TimeTick.OnTick -= AddTileToRefreshInfo;
+    }
+
+ 
+    public void NewGame()
+    {
+
     }
 
 }

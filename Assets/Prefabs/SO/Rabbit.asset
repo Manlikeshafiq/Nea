@@ -12,19 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0ae4724b357b894799d9c7dae88a8c8, type: 3}
   m_Name: Rabbit
   m_EditorClassIdentifier: 
+  plantSOList: []
   preferredTiles:
   - preferredTile: {fileID: 11400000, guid: dbe281f4b71daae4c948b9c53185e990, type: 2}
     weightBoost: 30
   ediblePlants:
   - ediblePlant: {fileID: 11400000, guid: fa9660966808cd84db607d32257b0dcf, type: 2}
     weightBoost: 30
+  spawnTile: {fileID: 0}
   animalName: Rabbit
-  animalID: 0
+  animalID: 100
   animalSprite: {fileID: 0}
   HP: 100
-  hungerLevel: 98.07000004313886
-  thirstLevel: 91.486000046134
+  hungerLevel: 100
+  thirstLevel: 100
   dead: 0
+  attackproficiency: 9
   weight: 0
   totalGrowthTicks: 386
   ticksNeededOne: 0

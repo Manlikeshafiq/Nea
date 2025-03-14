@@ -31,16 +31,29 @@ public class Fox : MonoBehaviour
             animalSO.totalGrowthTicks += 1;
             animalSO.hungerLevel -= 1.4f;
             animalSO.thirstLevel -= 2;
+            reproductionCooldown--;
+            
+            if (animalSO.thirstLevel < 0)
+            {
+                t.RemoveAnimal(animalSO);
 
+            }
+
+            if (animalSO.hungerLevel < 0)
+            {
+                t.RemoveAnimal(animalSO);
+            }
+            animalSO.TicksNeeded();
             reproductionCooldown--;
             UpdateFoodAndWater(t);
 
-            if (TimeTick.Instance.tick % 3 == 0)
+            if (TimeTick.Instance.tick % 2 == 0)
             {
                 UpdateState(t);
 
             }
-            animalSO.TicksNeeded();
+
+
 
             if (animalSO.animalMaturity >= 0 && animalSO.animalMaturity < maturityNames.Count)
             {
@@ -92,7 +105,7 @@ public class Fox : MonoBehaviour
 
     public void FindFoxForRepro(TileMono t)
     {
-        List<TileMono> tilesInRadius = GridManager.Instance.GetTilesWithinRadius(t.tileX, t.tileY, 3);
+        List<TileMono> tilesInRadius = GridManager.Instance.GetTilesWithinRadius(t.tileX, t.tileY, 6);
 
 
         TileMono nearestFoxTile = null;
@@ -231,7 +244,7 @@ public class Fox : MonoBehaviour
     {
 
 
-        List<TileMono> tilesInRadius = GridManager.Instance.GetTilesWithinRadius(t.tileX, t.tileY, 3);
+        List<TileMono> tilesInRadius = GridManager.Instance.GetTilesWithinRadius(t.tileX, t.tileY, 6);
 
 
         TileMono nearestRabbitTile = null;
@@ -313,18 +326,6 @@ public class Fox : MonoBehaviour
 
     public void Idle(TileMono spawnTile)
     {
-        if (spawnTile != null && spawnTile.animalSlots != null)
-        {
-            foreach (var animal in spawnTile.animalSlots)
-            {
-                if (animal.animalName == "Fox")
-                {
-                    Debug.Log("Fox detected on spawn tile! Changing spawn tile to current location.");
-                    spawnTile = GetComponentInParent<TileMono>();
-                    return;
-                }
-            }
-        }
 
         TileMono currentTile = GetComponentInParent<TileMono>();
         if (currentTile != spawnTile)

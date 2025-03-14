@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "AnimalSO", menuName = "Scriptable Objects/AnimalSO")]
@@ -11,6 +12,7 @@ public class AnimalSO : ScriptableObject
     }
 
 
+    public List<PlantSO> plantSOList;
 
     public TilePreference[] preferredTiles;
 
@@ -80,10 +82,10 @@ public class AnimalSO : ScriptableObject
 
     public AnimalSO CloneAnimalSO(AnimalSO data)
     {
-        // Create a new instance of AnimalSO
         AnimalSO clonedAnimal = ScriptableObject.CreateInstance<AnimalSO>();
 
-        // Copy all properties from the original AnimalSO to the new instance
+
+        //COPY ANY NEW DATA
         clonedAnimal.animalName = data.animalName;
         clonedAnimal.animalID = data.animalID;
         clonedAnimal.animalSprite = data.animalSprite;

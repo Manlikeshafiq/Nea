@@ -27,14 +27,17 @@ public class TileMono : MonoBehaviour
 
     public int tileNo;
     public int plantID;
+ 
+    public float gScore; 
+    public float hScore; 
+    public TileMono cameFrom;
 
 
-    public float gScore; // Cost from start to this tile
-    public float hScore; // Heuristic cost to reach the end
-    public TileMono cameFrom; // Parent tile in the path
+    public float FScore()
+    {
+        return gScore + hScore;
+    }
 
-    // Calculate the total cost (FScore)
-    public float FScore() => gScore + hScore;
 
     int checkNumber;
 
@@ -48,7 +51,7 @@ public class TileMono : MonoBehaviour
     {
         //ALL DATA COMES FROM CLONE
         tileSOData = InstantiateTileSOData(data);
-        name = $"Tile ({tileSOData.tileBiome}, {x}. {y})";
+        name = ($"Tile ({tileSOData.tileBiome}, {x}. {y}");
         tileNo = GridManager.Instance.tileNo;
         //ADD X,Y COORDS HERE?
         tileX = x; tileY = y;
@@ -79,7 +82,7 @@ public class TileMono : MonoBehaviour
 
             if (checkNumber == 4)
             {
-                Debug.Log(checkNumber + "PLANTING ON " + this);
+                Debug.Log("planting " + plant +"on" + this);
                 plant.SpreadSeeds(this);
             }
 
@@ -91,6 +94,17 @@ public class TileMono : MonoBehaviour
             {
                 Debug.Log(plant.plantName + "died");
                 RemovePlant(plant);
+            }
+
+            
+        }
+
+        foreach (AnimalSO animal in animalSlots)
+        {
+            if (animal.HP <= 0)
+            {
+                Debug.Log(animal.animalName + "died");
+                RemoveAnimal(animal);
             }
         }
 
@@ -106,12 +120,17 @@ public class TileMono : MonoBehaviour
 
             if (animal.animalName == "Rabbit")
             {
+                GridManager.Instance.rabbits++;
+                animal.animalID += 1;
                 RabbitScripts animalData = animalObject.AddComponent<RabbitScripts>();
                 animalData.animalSO = animal;
             }
 
            if  (animal.animalName == "Fox")
-            {
+           {
+               GridManager.Instance.foxes++;
+               animal.animalID += 1;
+
                 Fox animalData = animalObject.AddComponent<Fox>();
                 animalData.animalSO = animal;
             }
@@ -157,7 +176,7 @@ public class TileMono : MonoBehaviour
 
     }
 
-
+   
     public void UpdateFoodAndWaterRabbit(AnimalSO animal)
     {
         foreach (PlantSO plant in plantSlots)
@@ -185,7 +204,7 @@ public class TileMono : MonoBehaviour
             if (neighbour.tileSOData.tileBiome == "Water") 
             {
                 animal.thirstLevel = 100;
-                Debug.Log($"{animal.animalName} drank water from nearby tile {neighbour.tileX},{neighbour.tileY}");
+                Debug.Log($"{animal.animalName} drank water from tile {neighbour.tileX},{neighbour.tileY}");
                 return;
             }
         }
@@ -200,7 +219,7 @@ public class TileMono : MonoBehaviour
             if (neighbour.tileSOData.tileBiome == "Water")
             {
                 animal.thirstLevel = 100;
-                Debug.Log($"{animal.animalName} drank water from nearby tile {neighbour.tileX},{neighbour.tileY}");
+                Debug.Log($"{animal.animalName} drank water from tile {neighbour.tileX},{neighbour.tileY}");
                 return;
             }
         }
@@ -208,10 +227,11 @@ public class TileMono : MonoBehaviour
 
 
 
-    public bool AddPlant(PlantSO selectedPlant)
+    public void AddPlant(PlantSO selectedPlant)
     {
         if (plantSlots.Count < maxPlantSlots)
         {
+            selectedPlant = PlantSelectManager.Instance.ClonePlantSO(selectedPlant);
             plantSlots.Add(selectedPlant);
             plantID++;
 
@@ -223,25 +243,24 @@ public class TileMono : MonoBehaviour
             if (selectedPlant.plantName == "Oak Tree")
             {
                 PlantTreeUpdates plantData = plantObject.AddComponent<PlantTreeUpdates>();
-                plantData.plantso = selectedPlant;
+                plantData.plantSO = selectedPlant;
+                Debug.Log("planted");
             }
 
             if (selectedPlant.plantName == "Grass")
             {
                 Grass plantData = plantObject.AddComponent<Grass>();
-                plantData.plantso = selectedPlant;
+                plantData.plantSO = selectedPlant;
             }
 
-            return true;
         }
         else
         {
             Debug.Log("no more tilees available");
-            return false;
         } 
     }
 
-    
+
     public void RemovePlant(PlantSO plant)
     {
         for (int i = 0; i < plantSlots.Count; i++)
@@ -249,19 +268,46 @@ public class TileMono : MonoBehaviour
             if (plantSlots[i].plantID == plant.plantID)
             {
                 Debug.Log("removed plant" + plant.plantName);
-               
+
                 plant.dead = true;
                 plantSlots.RemoveAt(i);
 
-                
+
             }
         }
+
+       
     }
 
-    public List<PlantSO> GetPlants()
+    public void RemoveAnimal(AnimalSO animalso)
     {
-        return plantSlots;
+        for (int i = 0; i < animalSlots.Count; i++)
+        {
+            if (animalSlots[i].animalID == animalso.animalID)
+            {
+                Debug.Log("removed animal" + animalso.animalName);
+
+                animalso.dead = true;
+                animalSlots.RemoveAt(i);
+
+                if (animalso.animalName == "Rabbit")
+                {
+                    GridManager.Instance.rabbits--;
+
+                }
+
+                if (animalso.animalName == "Fox")
+                {
+                    GridManager.Instance.foxes--;
+
+                }
+            }
+        }
+
+        
     }
+
+
 
 
 }

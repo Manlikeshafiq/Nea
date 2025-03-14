@@ -5,18 +5,14 @@ using System.Collections.Generic;
 public class TileSO : ScriptableObject
 {
     
-    [Header("Tile Gen")]
     public string tileBiome;
     public Color tileColor;
     public float weight;
 
-    [Header("Tile Base Info")]
     public int sunlightLevel = 100; 
     public int fertilityLevel = 100;
     public int waterLeve = 100;
 
-
-  
 
 
     [System.Serializable]

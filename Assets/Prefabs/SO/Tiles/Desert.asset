@@ -15,11 +15,11 @@ MonoBehaviour:
   tileBiome: Desert
   tileColor: {r: 1, g: 0.8985187, b: 0, a: 1}
   weight: 1
-  sunlightLevel: 0
-  fertilityLevel: 0
-  waterLeve: 100
-  preferredNeighbors:
-  - neighborTile: {fileID: 11400000}
+  sunlightLevel: 95
+  fertilityLevel: 10
+  waterLeve: 10
+  preferredneighbours:
+  - neighbourTile: {fileID: 11400000}
     weightBoost: 7
-  - neighborTile: {fileID: 11400000, guid: dbe281f4b71daae4c948b9c53185e990, type: 2}
+  - neighbourTile: {fileID: 11400000, guid: dbe281f4b71daae4c948b9c53185e990, type: 2}
     weightBoost: -10

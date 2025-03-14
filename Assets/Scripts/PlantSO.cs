@@ -43,6 +43,9 @@ public class PlantSO : ScriptableObject
     public float ticksNeededThree;
     public float ticksNeededFour;
 
+    public float hungerReductionRate = 0.005f;
+    public float thirstReductionRate = 0.198f;
+
     public int plantMaturity = 0;
     public string plantMaturityName;
     public string nextPlantMaturityName;

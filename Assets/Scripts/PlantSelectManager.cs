@@ -51,6 +51,7 @@ public class PlantSelectManager : MonoBehaviour
         if (planSOListtIndex >= 0 && planSOListtIndex < plantSOList.Count)
         {
             selectedPlant = ClonePlantSO(plantSOList[planSOListtIndex]);
+            Debug.Log("selected plant");
             plantingMode = true;
 
         }
@@ -63,7 +64,7 @@ public class PlantSelectManager : MonoBehaviour
 
         {
             
-            tilePlanted = t.AddPlant(ClonePlantSO(selectedPlant));
+            t.AddPlant(ClonePlantSO(selectedPlant));
             selectedPlant.plantID = t.plantID;
             if (tilePlanted)
             {

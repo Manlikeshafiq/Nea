@@ -18,6 +18,6 @@ MonoBehaviour:
   sunlightLevel: 0
   fertilityLevel: 0
   waterLeve: 100
-  preferredNeighbors:
-  - neighborTile: {fileID: 11400000}
+  preferredneighbours:
+  - neighbourTile: {fileID: 11400000}
     weightBoost: 5

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class GridManager : MonoBehaviour
@@ -12,6 +13,10 @@ public class GridManager : MonoBehaviour
     public int gridHeight = 10;
     public float tileSize = 1.0f;
     public int tileNo = 0;
+    public int animalsMin = 0;
+
+    public int foxes;
+    public int rabbits;
 
 
     public GameObject tilePrefab; //Add hexagonal sprite prefab 
@@ -49,6 +54,8 @@ public class GridManager : MonoBehaviour
         {
             for (int y = 0; y < gridHeight; y++)
             {
+
+                Debug.Log(gridHeight);
                 TileSO selectedTileType = GetWeightedTileType(x, y);
                 Vector2 hexPositionOfTIle = CalculateHexPositionOfTile(x, y);
                 GameObject newTile = Instantiate(tilePrefab, hexPositionOfTIle, Quaternion.identity, transform);
@@ -58,6 +65,7 @@ public class GridManager : MonoBehaviour
                 grid[x, y] = tile;
                 tileNo++;
                 SpawnPlants(tile, x, y);
+                
                 SpawnAnimals(tile, x, y);
             }
         }
@@ -110,7 +118,9 @@ public class GridManager : MonoBehaviour
             if (randomWeight <= weightCheck)
             {
                 Debug.Log("planted" + tile.Key);
-                PlantSelectManager.Instance.TryPlantOnTile(tile.Key, plantso);
+                TileMono t = tile.Key;
+                t.AddPlant(plantso);
+
                 return; 
             }
         }
@@ -134,9 +144,10 @@ public class GridManager : MonoBehaviour
         tileMono = grid[x, y];
         int maxAnimals = 5;
         int plantsPlanted = 0;
-        float repeatChance = 0.1f;
+        float chance = 0.1f;
+        Debug.Log(animalsMin);
 
-        if ((plantsPlanted < maxAnimals && UnityEngine.Random.value < repeatChance) || animalsSpawned < 2)
+        if ((plantsPlanted < maxAnimals && UnityEngine.Random.value < chance) || animalsSpawned < animalsMin)
         {
             foreach (var animal in animals)
             {
@@ -179,12 +190,12 @@ public class GridManager : MonoBehaviour
 
             float randomWeight = UnityEngine.Random.Range(0f, totalWeight);
 
-            float cumulativeWeight = 0f;
+            float weightCheck = 0f;
             foreach (var animal in weightAndPlants)
             {
-                cumulativeWeight += animal.Value;
+                weightCheck += animal.Value;
 
-                if (randomWeight <= cumulativeWeight)
+                if (randomWeight <= weightCheck)
                 {
                     AnimalSO animalso = animal.Key;
                     animalso = animalso.CloneAnimalSO(animal.Key);
@@ -263,14 +274,14 @@ public class GridManager : MonoBehaviour
 
             float randomWeight = UnityEngine.Random.Range(0f, totalWeight);
 
-            float cumulativeWeight = 0f;
+            float check = 0f;
             foreach (var plant in weightAndPlants)
             {
-                cumulativeWeight += plant.Value;
+                check += plant.Value;
 
-                if (randomWeight <= cumulativeWeight)
+                if (randomWeight <= check)
                 {
-                    PlantSelectManager.Instance.TryPlantOnTile(tileMono, plant.Key);
+                    tileMono.AddPlant( plant.Key);
                     plantsPlanted++;
 
                 }
@@ -282,8 +293,8 @@ public class GridManager : MonoBehaviour
 
     public Vector2 GetWorldBounds()
     {
-        float gridWidth = (this.gridWidth - 1) * tileSize * 0.75f;
-        float gridHeight = (this.gridHeight - 1) * tileSize * Mathf.Sqrt(3) / 2;
+        float gridWidth = (this.gridWidth - 1 ) * tileSize * 0.5f;
+        float gridHeight = (this.gridHeight -1 ) * tileSize * 0.75f;
 
         return new Vector2(gridWidth, gridHeight);
     }
@@ -333,7 +344,6 @@ public class GridManager : MonoBehaviour
         //if random = 10 then grass chosen, if random = 11 then savannah chosen
 
 
-        float totalweight = 0;
 
         /*
         foreach (var value in weightedTilesDictionary)
@@ -348,7 +358,12 @@ public class GridManager : MonoBehaviour
         }
 
         float randomweight = Random.Range(0, 1f);
+
+
         */
+
+
+        float totalweight = 0;
         List<TileSO> tilesToRemove = new List<TileSO>();
         foreach (var value in weightedTilesDictionary)
         {
@@ -532,5 +547,68 @@ public class GridManager : MonoBehaviour
 
             return new Vector2(xPos, yPos);
         }
+
+
+    public void RestartGame()
+    {
+        int preservedAnimalsMin = animalsMin;
+        string preservedTileWeight = UIManager.Instance.biome;
+        int preseervedX = UIManager.Instance.X;
+        int preservedY = UIManager.Instance.Y;
+
+        ClearGrid();
+
+        grid = new TileMono[gridWidth, gridHeight];
+
+        animalsSpawned = 0;
+
+        animalsMin = preservedAnimalsMin;
+        Debug.Log(animalsMin +"s");
+        foreach (TileSO tile in tileTypes)
+        {
+            if (preservedTileWeight == tile.tileBiome)
+            {
+                tile.weight += 2;
+            }
+        }
+
+        gridWidth = preseervedX;
+        gridHeight = preservedY;
+
+        grid = new TileMono[gridWidth, gridHeight];
+        Debug.Log(gridHeight);
+        GenerateGrid();
+    
+
+        TimeTick.Instance.tickInterval = 1;
+
     }
+
+    private void ClearGrid()
+    {
+        TimeTick.Instance.tick = 0;
+        TimeTick.Instance.tickInterval = 9999999;
+
+        for (int x = 0; x < gridWidth; x++)
+        {
+            for (int y = 0; y < gridHeight; y++)
+            {
+                if (grid[x, y] != null)
+                {
+                    Destroy(grid[x, y].gameObject);
+                    grid[x, y] = null;
+                }
+            }
+        }
+
+        foxes = 0;
+        rabbits = 0;
+
+        grid = new TileMono[gridWidth, gridHeight];
+
+    }
+}
+
+
+
 
